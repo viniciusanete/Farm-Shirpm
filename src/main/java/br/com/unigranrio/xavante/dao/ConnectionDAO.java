@@ -1,4 +1,4 @@
-package dao;
+package br.com.unigranrio.xavante.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

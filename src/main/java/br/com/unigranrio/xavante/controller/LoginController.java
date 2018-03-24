@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.unigranrio.xavante.dao.LoginDAO;
 import br.com.unigranrio.xavante.model.Usuario;
-import dao.LoginDAO;
 
 @RestController
 @RequestMapping(value="/login")
