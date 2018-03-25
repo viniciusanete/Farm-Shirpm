@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +19,7 @@ import br.com.unigranrio.xavante.model.Usuario;
 import br.com.unigranrio.xavante.service.UsuarioService;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping(value="/login")
 public class LoginController {
 	
@@ -37,7 +39,7 @@ public class LoginController {
 		Usuario usuario2 = usuarioService.findByUsername(usuario.getUsername());
 		
 		if((usuario2 == null)||(!usuario.getPassword().equals(usuario2.getPassword()))) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario ou senha incorreta");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário e/ou senha incorreta");
 		}
 
 		String token = TokenFilter.gerarToken(usuario);
