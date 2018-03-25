@@ -14,7 +14,7 @@ public class ConnectionDAO {
 	}
 	
 	public Connection getConnection() throws SQLException {
-		Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/aaa?user=postgres&password=postgres");
+		Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/shrimp?user=postgres&password=postgres");
 		
 		return connection;
 	}
