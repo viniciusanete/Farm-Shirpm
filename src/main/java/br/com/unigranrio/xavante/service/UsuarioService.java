@@ -13,4 +13,25 @@ public class UsuarioService {
 		return userDao.findByUsername(username);
 	}
 
+	public boolean verificaLogin(String username) {
+		UsuarioDAO userDao = new UsuarioDAO();
+		return userDao.ExistsUsername(username);
+	}
+
+	public Usuario salvarUsuario(Usuario usuario) {
+		UsuarioDAO userDao = new UsuarioDAO();
+		usuario = userDao.save(usuario);
+		return usuario;
+	}
+
+	public boolean inativarUsuario(Long id) {
+		UsuarioDAO userDao = new UsuarioDAO();
+		return userDao.setInactive(id);
+	}
+
+	public Usuario findById(Long id) {
+		UsuarioDAO userDao = new UsuarioDAO();
+		return userDao.findById(id);
+	}
+
 }

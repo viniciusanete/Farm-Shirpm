@@ -5,6 +5,7 @@ public class Usuario {
 	private String username;
 	private String password;
 	private Integer perfil;
+	private Boolean inactive; 
 	
 	
 	public String getUsername() {
@@ -30,6 +31,12 @@ public class Usuario {
 	}
 	public void setId(Long id) {
 		this.id = id;
+	}
+	public Boolean getInactive() {
+		return inactive;
+	}
+	public void setInactive(Boolean inactive) {
+		this.inactive = inactive;
 	}
 	
 	

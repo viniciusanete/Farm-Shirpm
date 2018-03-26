@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 
 import br.com.unigranrio.xavante.model.Usuario;
 
-public class LoginDAO {
+public class LoginDAO  {
 	
 	
 
@@ -14,6 +14,7 @@ public class LoginDAO {
 		Connection con = null;
 		Usuario usuario = new Usuario();
 		PreparedStatement statement = null;
+		ResultSet result = null;
 		String select;
 		
 		try {
@@ -23,7 +24,7 @@ public class LoginDAO {
 			statement.setString(1, user);
 			statement.setString(2, pass);
 			
-			ResultSet result = statement.executeQuery(); 
+			result = statement.executeQuery(); 
 			while(result.next()) {
 				//Inserir o dado dentro dos get da Classe de Login
 			}
@@ -34,10 +35,10 @@ public class LoginDAO {
 			return usuario;
 		}finally {
 			try {
-				con.close();
-				con = null;
-				statement.close();
+				ConnectionDAO.closeConnection(con, statement, result);
+				con = null;				
 				statement = null;
+				result = null;
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
