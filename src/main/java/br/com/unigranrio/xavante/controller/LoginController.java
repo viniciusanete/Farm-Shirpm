@@ -48,6 +48,8 @@ public class LoginController {
 		retorno.put("token", token);
 		retorno.put("perfil", usuario2.getPerfil().toString());
 		retorno.put("id", usuario2.getId().toString());
+		retorno.put("name", usuario2.getName().toString());
+		retorno.put("email", usuario2.getEmail().toString());
 		//Sucesso		
 			return new ResponseEntity<Map<String, String>>(retorno, HttpStatus.OK);
 		//Falso

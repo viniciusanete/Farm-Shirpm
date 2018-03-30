@@ -250,6 +250,8 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		usuario.setPerfil(result.getInt("perfil"));
 		usuario.setUsername(result.getString("username"));
 		usuario.setInactive(result.getBoolean("inactive"));
+		usuario.setName(result.getString("name"));
+		usuario.setEmail(result.getString("email"));
 		return usuario;
 	}
 }
