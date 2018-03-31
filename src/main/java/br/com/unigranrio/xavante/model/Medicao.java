@@ -4,14 +4,23 @@ import java.util.Date;
 
 public class Medicao {
 
-	private String codeNumber;
+	private Long id;
 	private String measurementType;
 	private Date measurementTypeDate;
-	public String getCodeNumber() {
-		return codeNumber;
+	private Tanque tanque;
+	
+	
+	public Long getId() {
+		return id;
 	}
-	public void setCodeNumber(String codeNumber) {
-		this.codeNumber = codeNumber;
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public Tanque getTanque() {
+		return tanque;
+	}
+	public void setTanque(Tanque tanque) {
+		this.tanque = tanque;
 	}
 	public String getMeasurementType() {
 		return measurementType;

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import br.com.unigranrio.xavante.model.Perfil;
+import br.com.unigranrio.xavante.model.Telefone;
 import br.com.unigranrio.xavante.model.Usuario;
 
 public class UsuarioDAO implements IDaoPadrao<Usuario>{
@@ -19,7 +20,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		ResultSet result = null;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "SELECT * from C001 u join perfis p on (u.USU_PERFIL = p.P_ID)  where USU_USERNAME = ? and USU_INACTIVE = false";
+			sql = "SELECT * from C001 u join perfis p on (u.USU_PERFIL = p.P_ID) left join telefones t on (u.telefone = t.tel_id)  where USU_USERNAME = ? and USU_INACTIVE = false";
 			statement = con.prepareStatement(sql);
 			statement.setString(1, username);		
 			result = statement.executeQuery();
@@ -150,7 +151,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		String sql;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "SELECT * from C001 u join on perfis p on (u.USU_PERFIL = p.P_ID) where USU_ID = ?";
+			sql = "SELECT * from C001 u join on perfis p on (u.USU_PERFIL = p.P_ID) left join telefones t on (u.telefone = t.tel_id) where USU_ID = ?";
 			statement = con.prepareStatement(sql);
 			statement.setLong(1, id);		
 			result = statement.executeQuery();
@@ -247,6 +248,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 	private Usuario LerUsuario(ResultSet result) throws SQLException {
 		Perfil perfil = new Perfil();
 		Usuario usuario = new Usuario();
+		Telefone tel = new Telefone();
 		usuario.setId(result.getLong("USU_ID"));
 		usuario.setPassword(result.getString("USU_PASSWORD"));
 		usuario.setUsername(result.getString("USU_USERNAME"));
@@ -254,7 +256,9 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		usuario.setName(result.getString("USU_NAME"));
 		usuario.setEmail(result.getString("USU_EMAIL"));
 		lerPerfil(result, perfil);
+		lerTelefone(result, tel);
 		usuario.setPerfil(perfil);
+		usuario.setTelefone(tel);
 		return usuario;
 	}
 
@@ -265,5 +269,12 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		perfil.setEdicaoMedicoes(result.getBoolean("P_EDT_MED"));
 		perfil.setVisualizacaoMedicoes(result.getBoolean("P_VISU_MED"));
 		return perfil;		
+	}
+	private Telefone lerTelefone(ResultSet result, Telefone tel) throws SQLException {
+		tel.setId(result.getLong("tel_id"));
+		tel.setDdd(result.getString("tel_ddd"));
+		tel.setNumber(result.getString("tel_number"));
+		tel.setDdi(result.getString("tel_ddi"));
+		return tel;
 	}
 }
