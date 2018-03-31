@@ -1,5 +1,7 @@
 package br.com.unigranrio.xavante.model;
 
+import java.util.List;
+
 public class Usuario {
 	private Long id; 
 	private String username;
@@ -8,7 +10,7 @@ public class Usuario {
 	private Boolean inactive; 
 	private String name;
 	private String email;
-	private Telefone telefone;
+	private List<Telefone> telefone;
 	
 	public String getName() {
 		return name;
@@ -53,10 +55,11 @@ public class Usuario {
 		this.inactive = inactive;
 	}
 	
-	public Telefone getTelefone() {
+
+	public List<Telefone> getTelefone() {
 		return telefone;
 	}
-	public void setTelefone(Telefone telefone) {
+	public void setTelefone(List<Telefone> telefone) {
 		this.telefone = telefone;
 	}
 	@Override
