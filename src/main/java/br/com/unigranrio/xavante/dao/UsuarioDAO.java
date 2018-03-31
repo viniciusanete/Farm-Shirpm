@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import br.com.unigranrio.xavante.model.Perfil;
 import br.com.unigranrio.xavante.model.Usuario;
 
 public class UsuarioDAO implements IDaoPadrao<Usuario>{
@@ -18,7 +19,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		ResultSet result = null;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "SELECT * from usuarios where username = ? and inactive = false";
+			sql = "SELECT * from C001 u join perfis p on (u.USU_PERFIL = p.P_ID)  where USU_USERNAME = ? and USU_INACTIVE = false";
 			statement = con.prepareStatement(sql);
 			statement.setString(1, username);		
 			result = statement.executeQuery();
@@ -50,7 +51,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		ResultSet result = null;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "SELECT * from usuarios where username = ? and inactive = false";
+			sql = "SELECT * from C001 u where USU_USERNAME = ? and USU_INACTIVE = false";
 			statement = con.prepareStatement(sql);
 			statement.setString(1, username);		
 			result = statement.executeQuery();
@@ -84,11 +85,11 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		try {
 			
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "INSERT INTO usuarios(username, password, perfil) VALUES(?, ?, ?)";
+			sql = "INSERT INTO C001(USU_USERNAME, USU_PASSWORD, USU_PERFIL) VALUES(?, ?, ?)";
 			statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, usuario.getUsername());
 			statement.setString(2, usuario.getPassword());
-			statement.setInt(3, usuario.getPerfil());
+			statement.setLong(3, usuario.getPerfil().getId());
 			statement.executeUpdate();
 			result = statement.getGeneratedKeys();
 			if(result.next()) {
@@ -118,7 +119,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		Boolean retorno = null;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "DELETE FROM USUARIOS where id = ? ";
+			sql = "DELETE FROM C001 where USU_ID = ? ";
 			statement = con.prepareStatement(sql);
 			statement.setLong(1, id);
 			Integer rows = statement.executeUpdate();
@@ -149,7 +150,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		String sql;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "SELECT * from usuarios where id = ?";
+			sql = "SELECT * from C001 u join on perfis p on (u.USU_PERFIL = p.P_ID) where USU_ID = ?";
 			statement = con.prepareStatement(sql);
 			statement.setLong(1, id);		
 			result = statement.executeQuery();
@@ -182,7 +183,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		Boolean retorno = null;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "UPDATE usuarios SET inactive = true where id = ? ";
+			sql = "UPDATE C001 SET USU_INACTIVE = true where USU_ID = ? ";
 			statement = con.prepareStatement(sql);
 			statement.setLong(1, id);
 			Integer rows = statement.executeUpdate();
@@ -213,12 +214,12 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		Usuario usuRetorno = null;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "UPDATE usuarios SET username = ?, password = ?, perfil = ? where id = ? ";
+			sql = "UPDATE C001 SET USU_USERNAME = ?, USU_PASSWORD = ?, USU_PERFIL = ? where USU_ID = ? ";
 			statement = con.prepareStatement(sql);
 			statement.setString(1, usuario.getUsername());
 			statement.setString(2, usuario.getPassword());
 			if(usuario.getPerfil() != null)
-				statement.setInt(3, usuario.getPerfil());
+				statement.setLong(3, usuario.getPerfil().getId());
 			else
 				statement.setNull(3, java.sql.Types.INTEGER);
 			
@@ -244,14 +245,25 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 	}
 	
 	private Usuario LerUsuario(ResultSet result) throws SQLException {
+		Perfil perfil = new Perfil();
 		Usuario usuario = new Usuario();
-		usuario.setId(result.getLong("id"));
-		usuario.setPassword(result.getString("password"));
-		usuario.setPerfil(result.getInt("perfil"));
-		usuario.setUsername(result.getString("username"));
-		usuario.setInactive(result.getBoolean("inactive"));
-		usuario.setName(result.getString("name"));
-		usuario.setEmail(result.getString("email"));
+		usuario.setId(result.getLong("USU_ID"));
+		usuario.setPassword(result.getString("USU_PASSWORD"));
+		usuario.setUsername(result.getString("USU_USERNAME"));
+		usuario.setInactive(result.getBoolean("USU_INACTIVE"));
+		usuario.setName(result.getString("USU_NAME"));
+		usuario.setEmail(result.getString("USU_EMAIL"));
+		lerPerfil(result, perfil);
+		usuario.setPerfil(perfil);
 		return usuario;
+	}
+
+	private Perfil lerPerfil( ResultSet result,  Perfil  perfil ) throws SQLException {
+		perfil.setId(result.getLong("P_ID"));
+		perfil.setCadastroUsuario(result.getBoolean("P_CAD_USER"));
+		perfil.setDescricao(result.getString("P_DESCRICAO"));
+		perfil.setEdicaoMedicoes(result.getBoolean("P_EDT_MED"));
+		perfil.setVisualizacaoMedicoes(result.getBoolean("P_VISU_MED"));
+		return perfil;		
 	}
 }

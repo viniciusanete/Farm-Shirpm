@@ -43,15 +43,15 @@ public class LoginController {
 		}
 
 		String token = TokenFilter.gerarToken(usuario);
-		Map<String, String> retorno = new HashMap<>();
+		Map<String, Object> retorno = new HashMap<>();
 		
 		retorno.put("token", token);
-		retorno.put("perfil", usuario2.getPerfil().toString());
 		retorno.put("id", usuario2.getId().toString());
 		retorno.put("name", usuario2.getName().toString());
 		retorno.put("email", usuario2.getEmail().toString());
+		retorno.put("perfilObj", usuario2.getPerfil());
 		//Sucesso		
-			return new ResponseEntity<Map<String, String>>(retorno, HttpStatus.OK);
+			return new ResponseEntity<Map<String, Object>>(retorno, HttpStatus.OK);
 		//Falso
 			//return new ResponseEntity<Usuario>(HttpStatus.UNAUTHORIZED);
 	}

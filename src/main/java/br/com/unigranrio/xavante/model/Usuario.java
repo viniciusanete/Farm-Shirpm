@@ -4,7 +4,7 @@ public class Usuario {
 	private Long id; 
 	private String username;
 	private String password;
-	private Integer perfil;
+	private Perfil perfil;
 	private Boolean inactive; 
 	private String name;
 	private String email;
@@ -34,10 +34,10 @@ public class Usuario {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public Integer getPerfil() {
+	public Perfil getPerfil() {
 		return perfil;
 	}
-	public void setPerfil(Integer perfil) {
+	public void setPerfil(Perfil perfil) {
 		this.perfil = perfil;
 	}
 	public Long getId() {
