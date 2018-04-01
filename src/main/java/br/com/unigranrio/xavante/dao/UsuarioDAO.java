@@ -23,7 +23,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
 			sql = "SELECT * from C001 u join perfis p on (u.USU_PERFIL = p.P_ID) left join telefones t on (u.telefone = t.tel_id)  where USU_USERNAME = ? and USU_INACTIVE = false";
-			statement = con.prepareStatement(sql);
+			statement = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			statement.setString(1, username);		
 			result = statement.executeQuery();
 			if(result.next()) {
@@ -55,7 +55,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
 			sql = "SELECT * from C001 u where USU_USERNAME = ? and USU_INACTIVE = false";
-			statement = con.prepareStatement(sql);
+			statement = con.prepareStatement(sql,  ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			statement.setString(1, username);		
 			result = statement.executeQuery();
 			if(result.next()) {
@@ -154,7 +154,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
 			sql = "SELECT * from C001 u join on perfis p on (u.USU_PERFIL = p.P_ID) left join telefones t on (u.telefone = t.tel_id) where USU_ID = ?";
-			statement = con.prepareStatement(sql);
+			statement = con.prepareStatement(sql,  ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			statement.setLong(1, id);		
 			result = statement.executeQuery();
 			if(result.next()) {
