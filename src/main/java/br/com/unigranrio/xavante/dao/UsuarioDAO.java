@@ -22,7 +22,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		ResultSet result = null;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "SELECT * from C001 u join perfis p on (u.USU_PERFIL = p.P_ID) left join telefones t on (u.telefone = t.tel_id)  where USU_USERNAME = ? and USU_INACTIVE = false";
+			sql = "SELECT * from C001 u join perfis p on (u.USU_PERFIL = p.P_ID) left join telefones t on (u.usu_tel = t.tel_id)  where USU_USERNAME = ? and USU_INACTIVE = false";
 			statement = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			statement.setString(1, username);		
 			result = statement.executeQuery();
@@ -153,7 +153,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		String sql;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "SELECT * from C001 u join on perfis p on (u.USU_PERFIL = p.P_ID) left join telefones t on (u.telefone = t.tel_id) where USU_ID = ?";
+			sql = "SELECT * from C001 u join on perfis p on (u.USU_PERFIL = p.P_ID) left join telefones t on (u.usu_tel = t.tel_id) where USU_ID = ?";
 			statement = con.prepareStatement(sql,  ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			statement.setLong(1, id);		
 			result = statement.executeQuery();
@@ -278,7 +278,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		result.beforeFirst();
 		Telefone tel;
 		while(result.next()) {
-			if(result.getLong("telefone") == userId) {
+			if(result.getLong("usu_tel") == userId) {
 				tel = new Telefone();
 				tel.setId(result.getLong("tel_id"));
 				tel.setDdd(result.getString("tel_ddd"));
