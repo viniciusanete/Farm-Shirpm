@@ -49,7 +49,7 @@ public class LoginController {
 		retorno.put("id", usuario2.getId().toString());
 		retorno.put("name", usuario2.getName().toString());
 		retorno.put("email", usuario2.getEmail().toString());
-		retorno.put("perfilObj", usuario2.getPerfil());
+		retorno.put("perfil", usuario2.getPerfil());
 		//Sucesso		
 			return new ResponseEntity<Map<String, Object>>(retorno, HttpStatus.OK);
 		//Falso

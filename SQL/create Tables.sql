@@ -16,7 +16,7 @@
 );
 
 --create sequence serial_tel start 1
-create table if not exists telefone(
+create table if not exists telefones(
 tel_id bigint primary key default nextval('serial_tel'),
 tel_ddd varchar(4) default null,
 tel_number varchar(15) default null, 
@@ -33,7 +33,7 @@ P_VISU_MED boolean default false
 );
 insert into perfis (P_ID, P_CAD_USER, P_EDT_MED, P_VISU_MED) values (1, true, true, true);
 
---create schema registro
+create schema registro
 
 --create sequence serial_tanque start 1
 --verificar o que deseja guardar do tanque
