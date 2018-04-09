@@ -1,5 +1,7 @@
 package br.com.unigranrio.xavante.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import br.com.unigranrio.xavante.dao.UsuarioDAO;
@@ -34,4 +36,8 @@ public class UsuarioService {
 		return userDao.findById(id);
 	}
 
+	public List<Usuario> findAll() {
+		UsuarioDAO userDao = new UsuarioDAO();
+		return userDao.findAll();
+	}
 }

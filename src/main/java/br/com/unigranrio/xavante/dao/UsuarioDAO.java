@@ -46,6 +46,40 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		
 	}
 	
+	public List<Usuario> findAll() {
+		Connection con = null;
+		PreparedStatement statement = null;
+		List<Usuario> usuarioList = null;
+		Integer usuId = null;
+		String sql;
+		ResultSet result = null;
+		try {
+			con = ConnectionDAO.getInstance().getConnection();
+			sql = "SELECT * from C001 u join perfis p on (u.USU_PERFIL = p.P_ID) left join telefones t on (u.usu_tel = t.tel_id)  and USU_INACTIVE = false ORDER BY USU_ID";
+			statement = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			result = statement.executeQuery();
+			while(result.next()) {
+				if(result.getLong("USU_ID") != usuId) {	
+					usuarioList.add(LerUsuario(result));
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			usuarioList = null;
+		}finally {
+			try{
+				ConnectionDAO.closeConnection(con, statement, result);
+				con = null;
+				statement = null;
+				result = null;
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return usuarioList;
+		
+	}
+	
 	public Boolean ExistsUsername(String username) {
 		Connection con = null;
 		PreparedStatement statement = null;
@@ -153,7 +187,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		String sql;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "SELECT * from C001 u join on perfis p on (u.USU_PERFIL = p.P_ID) left join telefones t on (u.usu_tel = t.tel_id) where USU_ID = ?";
+			sql = "SELECT * from C001 u join on perfis p on (u.USU_PERFIL = p.P_ID) left join telefones t on (u.usu_tel = t.tel_id) where USU_ID = ? ORDER BY USU_ID";
 			statement = con.prepareStatement(sql,  ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			statement.setLong(1, id);		
 			result = statement.executeQuery();
@@ -217,7 +251,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		Usuario usuRetorno = null;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "UPDATE C001 SET USU_USERNAME = ?, USU_PASSWORD = ?, USU_PERFIL = ? where USU_ID = ? ";
+			sql = "UPDATE C001 SET USU_USERNAME = ?, USU_PASSWORD = ?, USU_PERFIL = ? where USU_ID = ? ORDER BY USU_ID";
 			statement = con.prepareStatement(sql);
 			statement.setString(1, usuario.getUsername());
 			statement.setString(2, usuario.getPassword());

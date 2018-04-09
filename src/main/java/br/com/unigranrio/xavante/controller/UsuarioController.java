@@ -1,5 +1,7 @@
 package br.com.unigranrio.xavante.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -74,5 +76,17 @@ public class UsuarioController {
 		}else {
 			return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);
 		}
+	}
+	
+	public ResponseEntity<List<Usuario>> buscarTodos(){
+		List<Usuario> usuList;
+		usuList = usuarioService.findAll();
+		if(usuList == null) {
+			return new ResponseEntity<List<Usuario>>(HttpStatus.NOT_FOUND);
+		}
+		else {
+			return new ResponseEntity<List<Usuario>>(usuList, HttpStatus.OK);
+		}
+		
 	}
 }
