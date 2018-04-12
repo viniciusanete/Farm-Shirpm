@@ -78,6 +78,7 @@ public class UsuarioController {
 		}
 	}
 	
+	@RequestMapping(value="/users", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Usuario>> buscarTodos(){
 		List<Usuario> usuList;
 		usuList = usuarioService.findAll();

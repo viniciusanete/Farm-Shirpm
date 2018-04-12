@@ -6,11 +6,7 @@
  USU_PERFIL bigint,
  USU_NAME varchar(100),
  USU_EMAIL varchar(50),
- USU_TEL bigint,
  foreign key (USU_PERFIL) references perfis (P_ID)
- on delete set null
- on update cascade,
- foreign key (USU_TEL) references telefone (tel_id)
  on delete set null
  on update cascade
 );
@@ -20,7 +16,11 @@ create table if not exists telefones(
 tel_id bigint primary key default nextval('serial_tel'),
 tel_ddd varchar(4) default null,
 tel_number varchar(15) default null, 
-tel_ddi varchar(4) default null
+tel_ddi varchar(4) default null,
+USU_TEL bigint,
+foreign key (USU_TEL) references C001 (usu_id)
+on delete set null
+on update cascade
 )
 
 --create sequence serial_perfil start 1

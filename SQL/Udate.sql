@@ -1,7 +1,9 @@
 alter table usuarios alter column id set default nextval('serial_user');
 --alter table usuarios add column inactive boolean default false;
 alter table usuarios alter column perfil type bigint;
-alter table usuarios add column telefone bigint default null;
+alter table C001 alter column telefone rename usu_tel
+
+
 
 
 
@@ -14,3 +16,7 @@ alter table C001 add constraint PERFIS_FK foreign key (USU_PERFIL) references pe
 --create sequence serial_tel start 1
 --insert into C001(USU_ID,USU_USERNAME,USU_PASSWORD,USU_PERFIL,USU_INACTIVE) select id, username, password, perfil, inactive  from usuarios;
 --drop table if exists usuarios;
+
+alter table C001 drop column telefone 
+alter table telefones add column usu_tel bigint
+alter table telefones add constraint telefone_FK foreign key (usu_tel) references C001 (usu_id);

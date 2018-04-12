@@ -49,17 +49,18 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 	public List<Usuario> findAll() {
 		Connection con = null;
 		PreparedStatement statement = null;
-		List<Usuario> usuarioList = null;
-		Integer usuId = null;
+		List<Usuario> usuarioList = new ArrayList<>();
+		Long usuId = -1L;
 		String sql;
 		ResultSet result = null;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "SELECT * from C001 u join perfis p on (u.USU_PERFIL = p.P_ID) left join telefones t on (u.usu_tel = t.tel_id)  and USU_INACTIVE = false ORDER BY USU_ID";
+			sql = "SELECT * from C001 u join perfis p on (u.USU_PERFIL = p.P_ID) left join telefones t on (t.usu_tel = u.usu_id)  where USU_INACTIVE = false ORDER BY USU_ID";
 			statement = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			result = statement.executeQuery();
 			while(result.next()) {
 				if(result.getLong("USU_ID") != usuId) {	
+					usuId = result.getLong("USU_ID");
 					usuarioList.add(LerUsuario(result));
 				}
 			}
