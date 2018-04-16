@@ -6,6 +6,7 @@ public class Arduino {
 
 	private Long id;
 	private MedidoresEnum tipo;
+	
 	public Long getId() {
 		return id;
 	}
