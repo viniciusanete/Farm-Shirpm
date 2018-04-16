@@ -40,4 +40,8 @@ public class UsuarioService {
 		UsuarioDAO userDao = new UsuarioDAO();
 		return userDao.findAll();
 	}
+	public Usuario alterarUsuario (Usuario usuario) {
+		UsuarioDAO userDao = new UsuarioDAO();
+		return userDao.update(usuario);
+	}
 }

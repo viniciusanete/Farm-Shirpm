@@ -2,6 +2,8 @@ package br.com.unigranrio.xavante.model;
 
 import java.util.List;
 
+import br.com.unigranrio.xavante.dto.UsuarioDTO;
+
 public class Usuario {
 	private Long id; 
 	private String username;
@@ -61,6 +63,17 @@ public class Usuario {
 	}
 	public void setTelefone(List<Telefone> telefone) {
 		this.telefone = telefone;
+	}
+	public UsuarioDTO ReturnDto() {
+		UsuarioDTO usuarioDto = new UsuarioDTO();
+		usuarioDto.setEmail(this.getEmail());
+		usuarioDto.setId(this.getId());
+		usuarioDto.setName(this.getName());
+		usuarioDto.setPassword(this.getPassword());
+		usuarioDto.setPerfil(this.getPerfil());
+		usuarioDto.setTelefone(this.getTelefone());
+		usuarioDto.setUsername(this.getUsername());
+		return usuarioDto;
 	}
 	@Override
 	public int hashCode() {

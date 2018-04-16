@@ -120,24 +120,65 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		PreparedStatement statement = null;
 		ResultSet result = null;
 		String sql;
+		Integer valor;
 		try {
 			
+			
+			
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "INSERT INTO C001(USU_USERNAME, USU_PASSWORD, USU_PERFIL) VALUES(?, ?, ?)";
+			con.setAutoCommit(false);
+			sql = "INSERT INTO C001(USU_USERNAME, USU_PASSWORD, USU_PERFIL, USU_NAME, USU_EMAIL) VALUES(?, ?, ?, ?, ?)";
 			statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, usuario.getUsername());
 			statement.setString(2, usuario.getPassword());
 			statement.setLong(3, usuario.getPerfil().getId());
+			statement.setString(4, usuario.getName());
+			statement.setString(5, usuario.getEmail());			
 			statement.executeUpdate();
 			result = statement.getGeneratedKeys();
 			if(result.next()) {
 				usuario.setId(result.getLong(1));
 			}		
+			
+			if(usuario.getTelefone().size() > 0) {
+				result.close();
+				statement.close();
+				sql = "INSERT INTO telefones (tel_ddd, tel_number, tel_ddi, usu_tel) VALUES (?,?,?,?)";
+				for(Integer i=1; i < usuario.getTelefone().size(); i++) {
+					sql += ", (?, ?, ?, ?)";
+				}
+				valor = 1;
+				statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+				for(Telefone telefone : usuario.getTelefone()) {
+					statement.setString(valor++, telefone.getDdd());
+					statement.setString(valor++, telefone.getNumber());
+					statement.setString(valor++, telefone.getDdi());
+					statement.setLong(valor++, usuario.getId());
+				}
+				statement.executeUpdate();
+				result = statement.getGeneratedKeys();
+				valor = 0;
+				while(result.next()){
+					usuario.getTelefone().get(valor).setId(result.getLong(valor+1));
+					valor++;
+				}
+			
+			}
+			con.commit();
+			
+				
 		}catch (Exception e) {
 			e.printStackTrace();
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			usuario = null;
 		}finally {
 			try {
+				
 				ConnectionDAO.closeConnection(con, statement, result);
 				con = null;				
 				statement = null;
@@ -148,6 +189,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		}
 		return usuario;
 	}
+	
 	@Override
 	public Boolean delete(Long id) {
 		Connection con = null;
@@ -247,12 +289,12 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 	public Usuario update(Usuario usuario) {
 		Connection con = null;
 		PreparedStatement statement = null;
-		ResultSet result = null;
 		String sql;
 		Usuario usuRetorno = null;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "UPDATE C001 SET USU_USERNAME = ?, USU_PASSWORD = ?, USU_PERFIL = ? where USU_ID = ? ORDER BY USU_ID";
+			con.setAutoCommit(false);
+			sql = "UPDATE C001 SET USU_USERNAME = ?, USU_PASSWORD = ?, USU_PERFIL = ?, USU_NAME = ?, USU_EMAIL = ? where USU_ID = ?";
 			statement = con.prepareStatement(sql);
 			statement.setString(1, usuario.getUsername());
 			statement.setString(2, usuario.getPassword());
@@ -260,15 +302,34 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 				statement.setLong(3, usuario.getPerfil().getId());
 			else
 				statement.setNull(3, java.sql.Types.INTEGER);
+			statement.setString(4, usuario.getName());
+			statement.setString(5, usuario.getEmail());
+			statement.setLong(6, usuario.getId());
 			
 			
-			result = statement.executeQuery();
-			if(result.next()) 
-				usuRetorno = LerUsuario(result);
-			else
-				usuRetorno = null;
+			statement.executeUpdate();
+			
+			for(Telefone telefone : usuario.getTelefone()) {
+				statement.close();
+				sql = "UPDATE telefones  SET tel_ddd = ?, tel_number = ? , tel_ddi = ? WHERE tel_id = ? ";
+				statement = con.prepareStatement(sql);
+				statement.setString(1, telefone.getDdd());
+				statement.setString(2, telefone.getNumber());
+				statement.setString(3, telefone.getDdi());
+				statement.setLong(4, telefone.getId());
+				statement.executeUpdate();
+				statement.close();
+				}
+				con.commit();
+				usuRetorno = usuario;
 		}catch (Exception e) {
 			e.printStackTrace();
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			usuRetorno = null;
 		}finally {
 			try {
