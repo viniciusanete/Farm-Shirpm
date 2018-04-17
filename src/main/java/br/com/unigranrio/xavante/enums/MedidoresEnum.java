@@ -3,7 +3,7 @@ package br.com.unigranrio.xavante.enums;
 
 
 public enum MedidoresEnum{
-	PH(1), CLARIDADE(2), SALINIDADE(3);
+	PH(0), CLARIDADE(1), SALINIDADE(2);
 	
 	private final int valor;
 	private MedidoresEnum(int valorOpcao) {

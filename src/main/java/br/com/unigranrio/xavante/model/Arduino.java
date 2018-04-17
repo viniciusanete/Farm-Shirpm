@@ -5,7 +5,8 @@ import br.com.unigranrio.xavante.enums.MedidoresEnum;
 public class Arduino {
 
 	private Long id;
-	private MedidoresEnum tipo;
+	
+	private Tanque tanque;
 	
 	public Long getId() {
 		return id;
@@ -13,11 +14,11 @@ public class Arduino {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public MedidoresEnum getTipo() {
-		return tipo;
+	public Tanque getTanque() {
+		return tanque;
 	}
-	public void setTipo(MedidoresEnum tipo) {
-		this.tipo = tipo;
+	public void setTanque(Tanque tanque) {
+		this.tanque = tanque;
 	}
 	
 }

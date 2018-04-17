@@ -8,7 +8,7 @@ public class Tanque {
 	private Long  id;
 	private String name;
 	private Date capacity;
-	private List<Arduino> arduino; 
+	private List<Medicao> medicao; 
 	
 	public Long getId() {
 		return id;
@@ -28,12 +28,13 @@ public class Tanque {
 	public void setCapacity(Date capacity) {
 		this.capacity = capacity;
 	}
-	public List<Arduino> getArduino() {
-		return arduino;
+	public List<Medicao> getMedicao() {
+		return medicao;
 	}
-	public void setArduino(List<Arduino> arduino) {
-		this.arduino = arduino;
+	public void setMedicao(List<Medicao> medicao) {
+		this.medicao = medicao;
 	}
+
 	
 	
 
