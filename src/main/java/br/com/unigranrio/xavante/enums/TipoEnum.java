@@ -2,11 +2,11 @@ package br.com.unigranrio.xavante.enums;
 
 
 
-public enum MedidoresEnum{
+public enum TipoEnum{
 	PH(0), CLARIDADE(1), SALINIDADE(2);
 	
 	private final int valor;
-	private MedidoresEnum(int valorOpcao) {
+	TipoEnum(int valorOpcao) {
 		valor = valorOpcao;
 	}
 	public int getValor() {

@@ -1,5 +1,6 @@
 package br.com.unigranrio.xavante.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -7,7 +8,7 @@ public class Tanque {
 	
 	private Long  id;
 	private String name;
-	private Date capacity;
+	private Integer capacity;
 	private List<Medicao> medicao; 
 	
 	public Long getId() {
@@ -22,13 +23,16 @@ public class Tanque {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Date getCapacity() {
+	public Integer getCapacity() {
 		return capacity;
 	}
-	public void setCapacity(Date capacity) {
+	public void setCapacity(Integer capacity) {
 		this.capacity = capacity;
 	}
 	public List<Medicao> getMedicao() {
+		if (this.medicao == null){
+			this.medicao = new ArrayList<Medicao>();
+		}
 		return medicao;
 	}
 	public void setMedicao(List<Medicao> medicao) {

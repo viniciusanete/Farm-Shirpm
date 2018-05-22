@@ -49,8 +49,20 @@ MED_ID bigint primary key default nextval('serial_medicao'),
 MED_DATAHORA date default null,
 MED_REGISTRO varchar(100) default null,
 MED_TANQUE bigint,
+MED_TIPO INTEGER,
 foreign key (MED_TANQUE) references registro.tanque (tanq_id)
- on delete set null
+ on delete cascade
  on update cascade
+);
+
+--create sequence serial_arduino start 1;
+create table if not exists registro.arduino(
+arduino_id bigint primary key default nextval('serial_arduino'),
+codigo varchar(100),
+tipo int,
+TANQ_ID bigint,
+foreign key (TANQ_ID) references registro.tanque (TANQ_ID)
+on delete cascade
+on update cascade
 );
 
