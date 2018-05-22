@@ -1,0 +1,122 @@
+package br.com.unigranrio.xavante.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+import br.com.unigranrio.xavante.model.Medicao;
+import br.com.unigranrio.xavante.model.Tanque;
+
+public class TanqueDAO  {
+	
+	public Tanque CadastrarTanque(Tanque tanque) {
+		Connection con = null;
+		PreparedStatement statement = null;
+		ResultSet result = null; 
+		String sql = null;
+		
+		try {
+			con = ConnectionDAO.getInstance().getConnection();
+			sql = "insert into tanque (tanq_nome, tanq_capacidade) values( ?, ? )";
+			
+			con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			statement.setString(1, tanque.getName());
+			statement.setInt(2, tanque.getCapacity() );
+			
+			statement.executeUpdate();
+			result = statement.getGeneratedKeys();
+			
+			if(result.next()) {
+				tanque.setId(result.getLong(1));
+			}else {
+				tanque = null;
+			}
+				
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			tanque = null;
+		}finally {
+			try {
+				ConnectionDAO.closeConnection(con);
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		return tanque;
+	}
+	
+	public Tanque pesquisarTanque(Long id) {
+		Connection con = null;
+		PreparedStatement statement = null;
+		ResultSet result = null; 
+		String sql = null;
+		Tanque tanque;
+		
+		try {
+			con = ConnectionDAO.getInstance().getConnection();
+			sql = "select t.tanq_id, t.tanq_nome, t.tanq_capacidade"
+					+ " from registro.tanque t where t.tanq_id = ?";
+			
+			con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			statement.setLong(1, id);
+
+			
+			result = statement.executeQuery();
+			
+			if(result.next()) {
+				tanque  = lerTanqueSemMedicao(result);
+			}else {
+				tanque = null;
+			}		
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			tanque = null;
+		}finally {
+			try {
+				ConnectionDAO.closeConnection(con);
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		return tanque;
+	}
+	
+	public static Tanque lerTanqueSemMedicao(ResultSet result) throws SQLException {
+		Tanque tanque = new Tanque();
+		tanque.setCapacity(result.getInt("tanq_capacidade"));
+		tanque.setId(result.getLong("tanq_id"));
+		tanque.setName(result.getString("tanq_nome"));
+		return tanque;
+	//tanque.setMedicao();
+
+	}
+	public static Tanque LerTanqueComMedicao(ResultSet result) throws SQLException {
+		Tanque tanque = new Tanque();
+		Medicao medicao;
+		tanque.setCapacity(result.getInt("tanq_capacidade"));
+		tanque.setId(result.getLong("tanq_id"));
+		tanque.setName(result.getString("tanq_nome"));
+		do {
+			if (result.getLong("med_tanque") != tanque.getId())
+				break;
+			
+			medicao = new Medicao();
+			medicao.setDataMedicao(result.getTimestamp("med_datahora"));
+			medicao.setId(result.getLong("med_id"));
+			medicao.setRegistro(result.getString("med_registro"));
+			medicao.setTanque(tanque);
+			medicao.setTipo(result.getInt("med_tipo"));
+			//medicao.setUsuario(result.);
+			tanque.getMedicao().add(medicao);
+		}while(result.next());
+		return tanque;
+	}
+
+}
