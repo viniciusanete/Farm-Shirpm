@@ -25,10 +25,10 @@ public class MedicaoController {
 	@Autowired
 	MedicaoService medicaoService;
 
-	@RequestMapping(method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE, value="/{id}")
-	public ResponseEntity receberMedicao(@RequestBody Medicao medicao, @RequestParam Long arduinoId) {
+	@RequestMapping(method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE, value="/arduino/{codigo}/tipo/{tipo}")
+	public ResponseEntity receberMedicao(@RequestBody Medicao medicao, @PathVariable String codigo, Integer tipo) {
 		
-			medicao = medicaoService.salvarMedicao(arduinoId, medicao);
+			medicao = medicaoService.salvarMedicao(codigo, tipo, medicao);
 			if(medicao == null) {
 				return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
 			}else

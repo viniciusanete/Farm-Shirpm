@@ -25,7 +25,17 @@ public class MedicaoService {
 		medicao.setTipo(arduino.getTipo());
 		return medicaoDao.save(medicao);
 	}
-	
+	public Medicao salvarMedicao(String codigo, Integer tipo, Medicao medicao) {
+		ArduinoService arduinoService = new ArduinoService();
+		MedicaoDao medicaoDao = new MedicaoDao();
+		Arduino arduino;
+		
+		arduino = arduinoService.pesquisarArduino(codigo, tipo);
+		
+		medicao.setTanque(arduino.getTanque());
+		medicao.setTipo(arduino.getTipo());
+		return medicaoDao.save(medicao);
+	}
 	public Tanque pesquisarMedicoesTanque(Long idTanque){
 		
 		MedicaoDao medicaoDao = new MedicaoDao();

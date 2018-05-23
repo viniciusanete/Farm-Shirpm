@@ -86,6 +86,45 @@ public class ArduinoDAO {
 		}
 		return arduino;
 	}
+	
+	public Arduino pesquisarArduino(String codigo, Integer tipo) {
+		Connection con = null;
+		PreparedStatement statement = null;
+		ResultSet result = null; 
+		String sql = null;
+		Arduino arduino;
+		
+		try {
+			con = ConnectionDAO.getInstance().getConnection();
+			sql = "select t.tanq_id, t.tanq_nome, t.tanq_capacidade, ar.arduino_id, ar.codigo, ar.tipo, ar.tanq_id as id_tanque"
+					+ " from registro.arduino ar join registro.tanque t where ar.arduino_codigo = ? and ar.tipo = ?";
+			
+			con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			statement.setString(1, codigo);
+			statement.setInt(2, tipo);
+
+			
+			result = statement.executeQuery();
+			
+			if(result.next()) {
+				arduino  = lerArduino(result);
+			}else {
+				arduino = null;
+			}		
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			arduino = null;
+		}finally {
+			try {
+				ConnectionDAO.closeConnection(con);
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		return arduino;
+	}
 
 	private Arduino lerArduino(ResultSet result) throws SQLException {
 		Arduino arduino = new Arduino();

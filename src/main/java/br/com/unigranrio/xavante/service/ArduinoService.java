@@ -14,4 +14,10 @@ public class ArduinoService {
 		ArduinoDAO arduinoDao = new ArduinoDAO();
 		return arduinoDao.pesquisarArduino(id);
 	}
+
+	public Arduino pesquisarArduino(String  codigo, Integer tipo) {
+		ArduinoDAO arduinoDao = new ArduinoDAO();
+		return arduinoDao.pesquisarArduino(codigo, tipo);
+	
+	}
 }
