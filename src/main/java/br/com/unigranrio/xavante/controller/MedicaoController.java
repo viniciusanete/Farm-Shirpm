@@ -1,5 +1,8 @@
 package br.com.unigranrio.xavante.controller;
 
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.unigranrio.xavante.dto.MedicaoDTO;
 import br.com.unigranrio.xavante.model.Medicao;
 import br.com.unigranrio.xavante.model.Tanque;
 import br.com.unigranrio.xavante.service.MedicaoService;
@@ -25,23 +29,33 @@ public class MedicaoController {
 	@Autowired
 	MedicaoService medicaoService;
 
-	@RequestMapping(method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE, value="/arduino/{codigo}/tipo/{tipo}")
-	public ResponseEntity receberMedicao(@RequestBody Medicao medicao, @PathVariable String codigo, Integer tipo) {
-		
-			medicao = medicaoService.salvarMedicao(codigo, tipo, medicao);
+	@RequestMapping(method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE, value="/arduino/{codigo}")
+	public ResponseEntity receberMedicao(@RequestBody MedicaoDTO medicaoDto, @PathVariable String codigo) {
+			Medicao medicao = atribuirMedicao(medicaoDto);
+			medicao = medicaoService.salvarMedicao(codigo, medicao);
 			if(medicao == null) {
-				return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}else
 				return new ResponseEntity<>(HttpStatus.CREATED);		
 	}
 	
 	//passar data no get caso procure pela data
-	
-	public  ResponseEntity retornarMedicoesTanques() {
-		
+
+	@RequestMapping(method=RequestMethod.GET, consumes=MediaType.APPLICATION_JSON_VALUE)
+	ResponseEntity retornarMedicoes(@RequestParam(value="data", required= false) String stringData) {
+		List<Tanque> tanques;
+				if(stringData == null ) 
+					tanques = medicaoService.pesquisarMedicoes(stringData);
+				else
+					tanques = medicaoService.pesquisarMedicoes();
+				
+				if (tanques == null) 
+					return new ResponseEntity<>("Não foram encontradas medições", HttpStatus.NO_CONTENT);
+				else
+					return new ResponseEntity<>(tanques, HttpStatus.OK);
 	}
 	//passar data no get caso procure pela data
-	@RequestMapping(method=RequestMethod.GET , consumes=MediaType.APPLICATION_JSON_VALUE, value="/tanque/{idTanque}}")
+	@RequestMapping(method=RequestMethod.GET , consumes=MediaType.APPLICATION_JSON_VALUE, value="/tanque/{idTanque}")
 	public ResponseEntity retornarMedicoesTanque(@RequestParam(value="data", required = false) String stringData, @PathVariable Long idTanque  ) {
 		Tanque tanque; 
 		if(stringData == null)
@@ -50,14 +64,23 @@ public class MedicaoController {
 			tanque = medicaoService.pesquisarMedicoesTanque(idTanque, stringData);
 		
 		if (tanque == null) 
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("Não foram encontradas medições", HttpStatus.NO_CONTENT);
 		else
 			return new ResponseEntity<Tanque>(tanque, HttpStatus.OK);
 		
 	}
-	//passar data no get caso procure pela data
-	public ResponseEntity retornarTodos() {
-		
+	
+	
+	private Medicao atribuirMedicao(MedicaoDTO medicaoDto) {
+		Medicao medicao = new Medicao();
+		medicao.setDataMedicao(new Date());
+		medicao.setId(medicaoDto.getId());
+		medicao.setRegistro(medicaoDto.getRegistro());
+		medicao.setTipo(medicaoDto.getTipo());
+		Tanque tanque = new Tanque();
+		tanque.setId(medicaoDto.getTanque());
+		medicao.setTanque(tanque);
+		return medicao;
 	}
 	
 	

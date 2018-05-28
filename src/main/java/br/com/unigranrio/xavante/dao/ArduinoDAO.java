@@ -18,9 +18,9 @@ public class ArduinoDAO {
 		
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "insert into arduino (codigo, tipo, tanq_id) values( ?, ?, ? )";
+			sql = "insert into registro.arduino (codigo, tipo, tanq_id) values( ?, ?, ? )";
 			
-			con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, arduino.getCodigo());
 			statement.setInt(2, arduino.getTipo().getValor() );
 			statement.setLong(3,arduino.getTanque().getId());
@@ -61,7 +61,7 @@ public class ArduinoDAO {
 			sql = "select t.tanq_id, t.tanq_nome, t.tanq_capacidade, ar.arduino_id, ar.codigo, ar.tipo, ar.tanq_id as id_tanque"
 					+ " from registro.arduino ar join registro.tanque t where ar.arduino_id = ?";
 			
-			con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			statement =con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			statement.setLong(1, id);
 
 			
@@ -87,7 +87,7 @@ public class ArduinoDAO {
 		return arduino;
 	}
 	
-	public Arduino pesquisarArduino(String codigo, Integer tipo) {
+	public Arduino pesquisarArduino(String codigo) {
 		Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet result = null; 
@@ -97,12 +97,10 @@ public class ArduinoDAO {
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
 			sql = "select t.tanq_id, t.tanq_nome, t.tanq_capacidade, ar.arduino_id, ar.codigo, ar.tipo, ar.tanq_id as id_tanque"
-					+ " from registro.arduino ar join registro.tanque t where ar.arduino_codigo = ? and ar.tipo = ?";
+					+ " from registro.arduino ar join registro.tanque t on (t.tanq_id = ar.tanq_id) where ar.codigo = ? ";
 			
-			con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			statement = con.prepareStatement(sql);
 			statement.setString(1, codigo);
-			statement.setInt(2, tipo);
-
 			
 			result = statement.executeQuery();
 			

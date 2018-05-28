@@ -20,9 +20,9 @@ public class TanqueDAO  {
 		
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "insert into tanque (tanq_nome, tanq_capacidade) values( ?, ? )";
+			sql = "insert into registro.tanque (tanq_nome, tanq_capacidade) values( ?, ? )";
 			
-			con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, tanque.getName());
 			statement.setInt(2, tanque.getCapacity() );
 			
@@ -62,7 +62,7 @@ public class TanqueDAO  {
 			sql = "select t.tanq_id, t.tanq_nome, t.tanq_capacidade"
 					+ " from registro.tanque t where t.tanq_id = ?";
 			
-			con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			statement.setLong(1, id);
 
 			
@@ -104,14 +104,19 @@ public class TanqueDAO  {
 		tanque.setId(result.getLong("tanq_id"));
 		tanque.setName(result.getString("tanq_nome"));
 		do {
-			if (result.getLong("med_tanque") != tanque.getId())
+			if (result.getLong("med_tanque") != tanque.getId()) {
+				result.absolute(result.getRow() - 1);
 				break;
+				
+			}
+				
 			
 			medicao = new Medicao();
 			medicao.setDataMedicao(result.getTimestamp("med_datahora"));
 			medicao.setId(result.getLong("med_id"));
 			medicao.setRegistro(result.getString("med_registro"));
-			medicao.setTanque(tanque);
+			//evitar circular
+			//medicao.setTanque(tanque);
 			medicao.setTipo(result.getInt("med_tipo"));
 			//medicao.setUsuario(result.);
 			tanque.getMedicao().add(medicao);

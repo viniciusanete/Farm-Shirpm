@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +24,9 @@ public class MedicaoDao implements IDaoPadrao<Medicao> {
 		
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "insert into arduino ( med_datahora, med_registro, med_tanque, med_tipo ) values( ?, ?, ?, ?)";
+			sql = "insert into registro.medicao( med_datahora, med_registro, med_tanque, med_tipo ) values( ?, ?, ?, ?)";
 			
-			con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			statement.setTimestamp(1, new Timestamp(medicao.getDataMedicao().getTime()));
 			statement.setString(2, medicao.getRegistro());
 			statement.setLong(3, medicao.getTanque().getId());
@@ -53,7 +54,6 @@ public class MedicaoDao implements IDaoPadrao<Medicao> {
 		}
 		return medicao;
 	}
-
 	@Override
 	public Boolean delete(Long id) {
 		// TODO Auto-generated method stub
@@ -78,7 +78,7 @@ public class MedicaoDao implements IDaoPadrao<Medicao> {
 		return null;
 	}
 
-	public Tanque pesquisarMedicoes(Long idTanque) {
+	public Tanque retornarMedicoesTanque(Long idTanque) {
 		Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet result = null; 
@@ -87,14 +87,14 @@ public class MedicaoDao implements IDaoPadrao<Medicao> {
 		
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "select tanq_id, tanq_capacidade, tanq_nome, med_datahora, med_registro, med_tanque, med_registro"
-					+ " from registro.medicao m join registro.tanque t on m.tanq_id = med_tanque "
+			sql = "select tanq_id, tanq_capacidade, tanq_nome,med_id, med_datahora, med_registro, med_tanque, med_registro, med_tipo"
+					+ " from registro.medicao m join registro.tanque t on t.tanq_id = m.med_tanque "
 					+ "where t.tanq_id = ?";
 			
-			con.prepareStatement(sql);
+			statement = con.prepareStatement(sql);
 			statement.setLong(1, idTanque);
 					
-			statement.executeQuery();
+			result = statement.executeQuery();
 
 			
 			if (result.next()) {
@@ -119,7 +119,7 @@ public class MedicaoDao implements IDaoPadrao<Medicao> {
 		return tanque;
 	}
 
-	public Tanque pesquisarMedicoes(Long idTanque, Date datainicial, Date dataFinal) {
+	public Tanque retornarMedicoesTanque(Long idTanque, Date datainicial, Date dataFinal) {
 		Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet result = null; 
@@ -132,12 +132,12 @@ public class MedicaoDao implements IDaoPadrao<Medicao> {
 					+ " from registro.medicao m join registro.tanque t on m.tanq_id = med_tanque "
 					+ "where (t.tanq_id = ?) and (med_datahora between ? and ?)";
 			
-			con.prepareStatement(sql);
+			statement = con.prepareStatement(sql);
 			statement.setLong(1, idTanque);
 			statement.setDate(2, new java.sql.Date(datainicial.getTime()));
-			statement.setDate(3, new java.sql.Date(datainicial.getTime()));
+			statement.setDate(3, new java.sql.Date(dataFinal.getTime()));
 					
-			statement.executeQuery();
+			result = statement.executeQuery();
 			
 			if (result.next()) {
 				tanque = TanqueDAO.LerTanqueComMedicao(result);
@@ -160,6 +160,95 @@ public class MedicaoDao implements IDaoPadrao<Medicao> {
 		}
 		return tanque;
 	}
+
+	public List<Tanque> retornarMedicoes() {
+		Connection con = null;
+		PreparedStatement statement = null;
+		ResultSet result = null; 
+		List<Tanque> tanques = new ArrayList<>();
+		String sql = null;
+		Integer quantidade;
+		
+		
+		try {
+			con = ConnectionDAO.getInstance().getConnection();
+			sql = "select tanq_id, tanq_capacidade, tanq_nome, med_datahora, med_registro, med_tanque, med_registro"
+					+ " from registro.medicao m join registro.tanque t on m.tanq_id = med_tanque order by tanq_id ";
+			
+			con.prepareStatement(sql);
+			result = statement.executeQuery();
+			
+			result.last();
+			quantidade = result.getRow();
+			result.beforeFirst();
+			
+			if(quantidade <= 0)
+				tanques = null;
+			
+			while (result.next()) {
+				tanques.add(TanqueDAO.LerTanqueComMedicao(result));
+			}									
+		} catch (Exception e) {
+			e.printStackTrace();
+			tanques = null;
+		}finally {
+			try {
+				ConnectionDAO.closeConnection(con);
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		return tanques;
+	}
+
+	public List<Tanque> pesquisarMedicoes(Date datainicial, Date dataFinal) {
+		Connection con = null;
+		PreparedStatement statement = null;
+		ResultSet result = null; 
+		List<Tanque> tanques = new ArrayList<>();
+		String sql = null;
+		Integer quantidade;
+		
+		
+		try {
+			con = ConnectionDAO.getInstance().getConnection();
+			sql = "select tanq_id, tanq_capacidade, tanq_nome, med_datahora, med_registro, med_tanque, med_registro"
+					+ " from registro.medicao m join registro.tanque t on m.tanq_id = med_tanque "
+					+ "where (med_datahora between ? and ?) order by tanq_id, med_datahora";
+			
+			con.prepareStatement(sql);
+			
+			statement.setDate(2, new java.sql.Date(datainicial.getTime()));
+			statement.setDate(3, new java.sql.Date(dataFinal.getTime()));
+					
+			result = statement.executeQuery();
+			
+			result.last();
+			quantidade = result.getRow();
+			result.beforeFirst();
+			
+			if(quantidade <= 0)
+				tanques = null;
+			
+			while (result.next()) {
+				tanques.add(TanqueDAO.LerTanqueComMedicao(result));
+			}
+						
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			tanques = null;
+		}finally {
+			try {
+				ConnectionDAO.closeConnection(con);
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		return tanques;
+	}
+
 }
+
 
 

@@ -11,14 +11,14 @@ import br.com.unigranrio.xavante.configurer.TokenFilter;
 
 @SpringBootApplication
 public class Start {
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Bean
-	public FilterRegistrationBean filtroJwt() {
-		FilterRegistrationBean frb = new FilterRegistrationBean();
-		frb.setFilter(new TokenFilter());
-		frb.addUrlPatterns("/active/*");
-		return frb;
-	}
+//	@SuppressWarnings({ "rawtypes", "unchecked" })
+//	@Bean
+//	public FilterRegistrationBean filtroJwt() {
+//		FilterRegistrationBean frb = new FilterRegistrationBean();
+//		frb.setFilter(new TokenFilter());
+//		frb.addUrlPatterns("/active/*");
+//		return frb;
+//	}
 	
 	public static void main(String[] args) throws SQLException {
 		
