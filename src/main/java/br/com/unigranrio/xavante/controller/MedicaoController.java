@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.unigranrio.xavante.dto.MedicaoDTO;
 import br.com.unigranrio.xavante.model.Medicao;
 import br.com.unigranrio.xavante.model.Tanque;
+import br.com.unigranrio.xavante.model.Usuario;
 import br.com.unigranrio.xavante.service.MedicaoService;
 
 @RestController
@@ -29,6 +30,16 @@ public class MedicaoController {
 	@Autowired
 	MedicaoService medicaoService;
 
+	@RequestMapping(value="/manual", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity salvarMedicaoManual(@RequestBody MedicaoDTO medicaoDto) {
+		Medicao medicao = atribuirMedicao(medicaoDto);
+		medicao = medicaoService.salvarMedicao(medicao);
+		if (medicao != null) 
+			return new ResponseEntity(medicao, HttpStatus.CREATED);
+		else
+			return new ResponseEntity(medicao, HttpStatus.BAD_REQUEST);
+		
+	}
 	@RequestMapping(method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE, value="/arduino/{codigo}")
 	public ResponseEntity receberMedicao(@RequestBody MedicaoDTO medicaoDto, @PathVariable String codigo) {
 			Medicao medicao = atribuirMedicao(medicaoDto);
@@ -73,13 +84,22 @@ public class MedicaoController {
 	
 	private Medicao atribuirMedicao(MedicaoDTO medicaoDto) {
 		Medicao medicao = new Medicao();
-		medicao.setDataMedicao(new Date());
+		if (medicaoDto.getDataMedicao() != null)
+		medicao.setDataMedicao(medicaoDto.getDataMedicao());
 		medicao.setId(medicaoDto.getId());
 		medicao.setRegistro(medicaoDto.getRegistro());
 		medicao.setTipo(medicaoDto.getTipo());
+		
 		Tanque tanque = new Tanque();
 		tanque.setId(medicaoDto.getTanque());
 		medicao.setTanque(tanque);
+		
+		if (medicaoDto.getUsuario() != null) {
+			Usuario usu = new Usuario();
+			usu.setId(medicaoDto.getUsuario());
+			medicao.setUsuario(usu);			
+		}
+		
 		return medicao;
 	}
 	

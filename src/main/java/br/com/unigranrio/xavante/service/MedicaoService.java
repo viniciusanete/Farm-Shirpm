@@ -65,6 +65,10 @@ public class MedicaoService {
 		datas = DataUtil.retornarRangeDatas(stringData);		
 		return medicaoDao.pesquisarMedicoes(datas.get(DataUtil.DATA_INICIAL), datas.get(DataUtil.DATA_FINAL));
 	}
+	public Medicao salvarMedicao(Medicao medicao) {
+		MedicaoDao medicaoDao = new MedicaoDao();
+		return medicaoDao.save(medicao);
+	}
 	
 
 }

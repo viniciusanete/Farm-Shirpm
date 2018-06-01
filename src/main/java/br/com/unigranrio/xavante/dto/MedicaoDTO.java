@@ -12,7 +12,7 @@ public class MedicaoDTO {
 	private Long tanque;
 	private String registro;
 	private Integer tipo;
-	private Usuario usuario;
+	private Long usuario;
 	public Long getId() {
 		return id;
 	}
@@ -43,10 +43,10 @@ public class MedicaoDTO {
 	public void setTipo(Integer tipo) {
 		this.tipo = tipo;
 	}
-	public Usuario getUsuario() {
+	public Long getUsuario() {
 		return usuario;
 	}
-	public void setUsuario(Usuario usuario) {
+	public void setUsuario(Long usuario) {
 		this.usuario = usuario;
 	}
 	
