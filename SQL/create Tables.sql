@@ -49,7 +49,11 @@ MED_ID bigint primary key default nextval('serial_medicao'),
 MED_DATAHORA date default null,
 MED_REGISTRO varchar(100) default null,
 MED_TANQUE bigint,
-MED_TIPO INTEGER,
+MED_TIPO INT,
+MED_USU bigint,
+foreign key (MED_USU) references c001 (USU_USERNAME) 
+on delete set null 
+on update cascade,
 foreign key (MED_TANQUE) references registro.tanque (tanq_id)
  on delete cascade
  on update cascade
