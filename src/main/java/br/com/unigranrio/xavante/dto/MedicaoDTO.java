@@ -8,7 +8,7 @@ import br.com.unigranrio.xavante.model.Usuario;
 
 public class MedicaoDTO {
 	private Long id;
-	private Date dataMedicao;
+	private String dataMedicao;
 	private Long tanque;
 	private String registro;
 	private Integer tipo;
@@ -19,10 +19,10 @@ public class MedicaoDTO {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Date getDataMedicao() {
+	public String getDataMedicao() {
 		return dataMedicao;
 	}
-	public void setDataMedicao(Date dataMedicao) {
+	public void setDataMedicao(String dataMedicao) {
 		this.dataMedicao = dataMedicao;
 	}
 	public Long getTanque() {

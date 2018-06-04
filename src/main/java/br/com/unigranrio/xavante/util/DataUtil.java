@@ -90,6 +90,16 @@ public class DataUtil {
 			return null;
 		}
 	}
+	
+	public static Date convertDataHora(String data) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		try{
+			return sdf.parse(data);
+		}catch (Exception e) {
+			return null;
+		}
+	}
+	
 	public static boolean validarData(String data) {
 		
 		try {

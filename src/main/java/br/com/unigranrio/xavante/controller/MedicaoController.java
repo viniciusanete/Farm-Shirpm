@@ -21,6 +21,7 @@ import br.com.unigranrio.xavante.model.Medicao;
 import br.com.unigranrio.xavante.model.Tanque;
 import br.com.unigranrio.xavante.model.Usuario;
 import br.com.unigranrio.xavante.service.MedicaoService;
+import br.com.unigranrio.xavante.util.DataUtil;
 
 @RestController
 @CrossOrigin("*")
@@ -85,7 +86,7 @@ public class MedicaoController {
 	private Medicao atribuirMedicao(MedicaoDTO medicaoDto) {
 		Medicao medicao = new Medicao();
 		if (medicaoDto.getDataMedicao() != null)
-		medicao.setDataMedicao(medicaoDto.getDataMedicao());
+		medicao.setDataMedicao(DataUtil.convertDataHora(medicaoDto.getDataMedicao()));
 		medicao.setId(medicaoDto.getId());
 		medicao.setRegistro(medicaoDto.getRegistro());
 		medicao.setTipo(medicaoDto.getTipo());
