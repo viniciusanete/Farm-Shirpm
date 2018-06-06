@@ -42,7 +42,7 @@ public class UsuarioController {
 				if(usuario == null) {
 					return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocorreu um erro ao salvar o usuario");
 				}else {
-					return  new ResponseEntity<Usuario>(HttpStatus.OK);
+					return  new ResponseEntity<Usuario>(HttpStatus.CREATED);
 				}
 			}
 		}			

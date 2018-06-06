@@ -22,7 +22,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		ResultSet result = null;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "SELECT * from C001 u join perfis p on (u.USU_PERFIL = p.P_ID) left join telefones t on (u.usu_tel = t.tel_id)  where USU_USERNAME = ? and USU_INACTIVE = false";
+			sql = "SELECT * from C001 u left join telefones t on (u.usu_id = t.usu_tel)  where USU_USERNAME = ? and USU_INACTIVE = false";
 			statement = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			statement.setString(1, username);		
 			result = statement.executeQuery();
@@ -55,7 +55,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		ResultSet result = null;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "SELECT * from C001 u join perfis p on (u.USU_PERFIL = p.P_ID) left join telefones t on (t.usu_tel = u.usu_id)  where USU_INACTIVE = false ORDER BY USU_ID";
+			sql = "SELECT * from C001 u left join telefones t on (t.usu_tel = u.usu_id)  where USU_INACTIVE = false ORDER BY USU_ID";
 			statement = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			result = statement.executeQuery();
 			while(result.next()) {
@@ -131,7 +131,10 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 			statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, usuario.getUsername());
 			statement.setString(2, usuario.getPassword());
-			statement.setLong(3, usuario.getPerfil().getId());
+			if(usuario.getPerfil() == null) 
+				statement.setNull(3, java.sql.Types.NULL);
+			else
+				statement.setLong(3, usuario.getPerfil().getId());
 			statement.setString(4, usuario.getName());
 			statement.setString(5, usuario.getEmail());			
 			statement.executeUpdate();
@@ -140,7 +143,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 				usuario.setId(result.getLong(1));
 			}		
 			
-			if(usuario.getTelefone().size() > 0) {
+			if((usuario.getTelefone() != null) && ( usuario.getTelefone().size() > 0)) {
 				result.close();
 				statement.close();
 				sql = "INSERT INTO telefones (tel_ddd, tel_number, tel_ddi, usu_tel) VALUES (?,?,?,?)";
@@ -230,7 +233,7 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		String sql;
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "SELECT * from C001 u join on perfis p on (u.USU_PERFIL = p.P_ID) left join telefones t on (u.usu_tel = t.tel_id) where USU_ID = ? ORDER BY USU_ID";
+			sql = "SELECT * from C001 u left join telefones t on (u.usu_id = t.usu_tel) where USU_ID = ? ORDER BY USU_ID";
 			statement = con.prepareStatement(sql,  ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			statement.setLong(1, id);		
 			result = statement.executeQuery();
@@ -353,9 +356,9 @@ public class UsuarioDAO implements IDaoPadrao<Usuario>{
 		usuario.setInactive(result.getBoolean("USU_INACTIVE"));
 		usuario.setName(result.getString("USU_NAME"));
 		usuario.setEmail(result.getString("USU_EMAIL"));
-		lerPerfil(result, perfil);
+		//lerPerfil(result, perfil);
 		lerTelefone(result, tel, usuario.getId());
-		usuario.setPerfil(perfil);
+		//usuario.setPerfil(perfil);
 		usuario.setTelefone(tel);
 		return usuario;
 	}

@@ -30,7 +30,7 @@ public class TanqueController {
 		if (tanque == null) 
 			return new ResponseEntity<>("Ocorreu um erro ao salvar o tanque", HttpStatus.BAD_REQUEST);
 		else
-			return new ResponseEntity<>(tanque, HttpStatus.OK);
+			return new ResponseEntity<>(tanque, HttpStatus.CREATED);
 	}
 	
 	private Tanque atribuirTanque(TanqueDTO tanqueDTO) {
