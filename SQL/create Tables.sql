@@ -47,7 +47,7 @@ TANQ_CAPACIDADE  varchar(10)
 --create sequence serial_medicao start 1
 create table if not exists registro.medicao ( 
 MED_ID bigint primary key default nextval('serial_medicao'),
-MED_DATAHORA date default null,
+MED_DATAHORA timestamp default null,
 MED_REGISTRO varchar(100) default null,
 MED_TANQUE bigint,
 MED_TIPO INT,

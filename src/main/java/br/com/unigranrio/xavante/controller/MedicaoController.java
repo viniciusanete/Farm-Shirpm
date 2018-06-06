@@ -91,10 +91,13 @@ public class MedicaoController {
 		medicao.setRegistro(medicaoDto.getRegistro());
 		medicao.setTipo(medicaoDto.getTipo());
 		
-		Tanque tanque = new Tanque();
-		tanque.setId(medicaoDto.getTanque());
-		medicao.setTanque(tanque);
 		
+		if(medicaoDto.getTanque() != null) {
+			Tanque tanque = new Tanque();
+			tanque.setId(medicaoDto.getTanque());
+			medicao.setTanque(tanque);
+		}
+			
 		if (medicaoDto.getUsuario() != null) {
 			Usuario usu = new Usuario();
 			usu.setId(medicaoDto.getUsuario());
