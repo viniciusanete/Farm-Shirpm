@@ -1,4 +1,5 @@
-﻿create table IF NOT EXISTS  C001 (
+﻿create sequence serial_user start 1
+create table IF NOT EXISTS  C001 (
  USU_ID bigint primary key default nextval('serial_user'),
  USU_USERNAME varchar(50),
  USU_PASSWORD varchar(50),
@@ -51,7 +52,7 @@ MED_REGISTRO varchar(100) default null,
 MED_TANQUE bigint,
 MED_TIPO INT,
 MED_USU bigint,
-foreign key (MED_USU) references c001 (USU_USERNAME) 
+foreign key (MED_USU) references c001 (USU_ID) 
 on delete set null 
 on update cascade,
 foreign key (MED_TANQUE) references registro.tanque (tanq_id)
