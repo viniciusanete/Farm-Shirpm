@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 import br.com.unigranrio.xavante.model.Medicao;
 import br.com.unigranrio.xavante.model.Tanque;
@@ -62,7 +63,7 @@ public class TanqueDAO  {
 			sql = "select t.tanq_id, t.tanq_nome, t.tanq_capacidade"
 					+ " from registro.tanque t where t.tanq_id = ?";
 			
-			statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			statement = con.prepareStatement(sql);
 			statement.setLong(1, id);
 
 			
@@ -121,6 +122,44 @@ public class TanqueDAO  {
 			//medicao.setUsuario(result.);
 			tanque.getMedicao().add(medicao);
 		}while(result.next());
+		return tanque;
+	}
+
+	public List<Tanque> buscarTodos() {
+		Connection con = null;
+		PreparedStatement statement = null;
+		ResultSet result = null; 
+		String sql = null;
+		List<Tanque> tanque = new ArrayList<>();
+		
+		try {
+			con = ConnectionDAO.getInstance().getConnection();
+			sql = "select t.tanq_id, t.tanq_nome, t.tanq_capacidade"
+					+ " from registro.tanque t";
+			
+			statement = con.prepareStatement(sql);
+
+			
+			result = statement.executeQuery();
+			
+			while(result.next()) {
+				tanque.add(lerTanqueSemMedicao(result));
+			}
+			if (tanque.size() <= 0){
+				tanque = null;
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			tanque = null;
+		}finally {
+			try {
+				ConnectionDAO.closeConnection(con);
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
 		return tanque;
 	}
 

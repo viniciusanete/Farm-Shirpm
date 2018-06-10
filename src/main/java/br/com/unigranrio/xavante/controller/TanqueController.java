@@ -1,5 +1,7 @@
 package br.com.unigranrio.xavante.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,6 +33,15 @@ public class TanqueController {
 			return new ResponseEntity<>("Ocorreu um erro ao salvar o tanque", HttpStatus.BAD_REQUEST);
 		else
 			return new ResponseEntity<>(tanque, HttpStatus.CREATED);
+	}
+	@RequestMapping	(value="/tanques", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity RetornarTanques() {
+		List<Tanque> tanques = tanqueService.buscarTanques();
+		if (tanques != null) {
+			return new ResponseEntity(tanques, HttpStatus.OK);
+		}else {
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
 	}
 	
 	private Tanque atribuirTanque(TanqueDTO tanqueDTO) {
