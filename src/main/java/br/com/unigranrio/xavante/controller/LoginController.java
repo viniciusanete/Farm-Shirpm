@@ -17,7 +17,10 @@ import br.com.unigranrio.xavante.configurer.TokenFilter;
 import br.com.unigranrio.xavante.dao.LoginDAO;
 import br.com.unigranrio.xavante.model.Usuario;
 import br.com.unigranrio.xavante.service.UsuarioService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
+@Api(value="api para controle do login")
 @RestController
 @CrossOrigin("*")
 @RequestMapping(value="/login")
@@ -26,14 +29,8 @@ public class LoginController {
 	@Autowired
 	UsuarioService usuarioService;
 
-	@RequestMapping(value="/teste", method=RequestMethod.POST)
-	public String Teste() {
-		LoginDAO logindao = new LoginDAO();
-		logindao.testeConexao();
-		return null;
-		
-	}
 	
+	@ApiOperation(value="Login de usuario")
 	@RequestMapping(value="/auth", method=RequestMethod.POST)
 	public ResponseEntity Autenticar(@RequestBody Usuario usuario){
 		Usuario usuario2 = usuarioService.findByUsername(usuario.getUsername());

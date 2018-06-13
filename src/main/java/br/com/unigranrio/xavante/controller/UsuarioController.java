@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.unigranrio.xavante.model.Usuario;
 import br.com.unigranrio.xavante.service.UsuarioService;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+@Api(value="API para controle de usuario")
 @RestController
 @CrossOrigin("*")
 @RequestMapping(value="/auth/user")
@@ -26,6 +28,7 @@ public class UsuarioController {
 	@Autowired
 	UsuarioService usuarioService;
 	
+	@ApiOperation(value="Cadastro de usuarios")
 	@RequestMapping(method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity gravarUsuario(@RequestBody Usuario usuario){
 		
@@ -47,6 +50,7 @@ public class UsuarioController {
 			}
 		}			
 	}
+	@ApiOperation(value="alteração de usuario")
 	@RequestMapping(method=RequestMethod.PUT, consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity alterarUsuario(@RequestBody Usuario usuario) {
 		if(usuario.getPassword() == null){
@@ -67,6 +71,7 @@ public class UsuarioController {
 		}		
 	}
 	
+	@ApiOperation(value="Exclusão de usuarios")
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE, consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity inativarUsuario(@PathVariable Long id){
 		boolean exclusao;
@@ -76,7 +81,7 @@ public class UsuarioController {
 		}else
 			return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao Excluir usuario");
 	}
-	
+	@ApiOperation(value="Consulta de usuario por nome de usuario")
 	@RequestMapping(value="/username", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity buscarUsuarioPorUsername(@RequestBody String username){
 		Usuario usuario;
@@ -88,6 +93,7 @@ public class UsuarioController {
 		}
 	}
 	
+	@ApiOperation(value="Consulta de usuario por id")
 	@RequestMapping(value="/{id}", method=RequestMethod.GET, consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity buscarUsuarioPorId(@PathVariable Long id){
 		Usuario usuario;
@@ -99,6 +105,7 @@ public class UsuarioController {
 		}
 	}
 	
+	@ApiOperation(value="Consulta de todos os usuarios")
 	@RequestMapping(value="/users", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Usuario>> buscarTodos(){
 		List<Usuario> usuList;

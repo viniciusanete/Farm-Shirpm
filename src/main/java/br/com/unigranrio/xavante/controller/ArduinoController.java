@@ -14,7 +14,10 @@ import br.com.unigranrio.xavante.dto.ArduinoDTO;
 import br.com.unigranrio.xavante.model.Arduino;
 import br.com.unigranrio.xavante.model.Tanque;
 import br.com.unigranrio.xavante.service.ArduinoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
+@Api(value="Api para manipulação do arduino")
 @RestController
 @RequestMapping(value="/auth/arduino")
 public class ArduinoController {
@@ -22,6 +25,7 @@ public class ArduinoController {
 	@Autowired
 	ArduinoService arduinoService;
 	
+	@ApiOperation(value="Cadastro de arduino")
 	@RequestMapping(method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity CadastrarArduino(@RequestBody ArduinoDTO arduinoDTO) {
 		Arduino arduino = atribuirArduino(arduinoDTO);

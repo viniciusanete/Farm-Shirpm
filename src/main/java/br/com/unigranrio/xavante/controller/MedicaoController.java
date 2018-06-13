@@ -22,7 +22,10 @@ import br.com.unigranrio.xavante.model.Tanque;
 import br.com.unigranrio.xavante.model.Usuario;
 import br.com.unigranrio.xavante.service.MedicaoService;
 import br.com.unigranrio.xavante.util.DataUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
+@Api(value="API para controle de medição")
 @RestController
 @CrossOrigin("*")
 @RequestMapping(value="/auth/medicao")
@@ -31,6 +34,7 @@ public class MedicaoController {
 	@Autowired
 	MedicaoService medicaoService;
 
+	@ApiOperation(value="cadastro de medição manual")
 	@RequestMapping(value="/manual", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity salvarMedicaoManual(@RequestBody MedicaoDTO medicaoDto) {
 		Medicao medicao = atribuirMedicao(medicaoDto);
@@ -41,6 +45,7 @@ public class MedicaoController {
 			return new ResponseEntity(medicao, HttpStatus.BAD_REQUEST);
 		
 	}
+	@ApiOperation(value="Cadastro de nedição automatica pelo arduino")
 	@RequestMapping(method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE, value="/arduino/{codigo}")
 	public ResponseEntity receberMedicao(@RequestBody MedicaoDTO medicaoDto, @PathVariable String codigo) {
 			Medicao medicao = atribuirMedicao(medicaoDto);
@@ -52,7 +57,7 @@ public class MedicaoController {
 	}
 	
 	//passar data no get caso procure pela data
-
+	@ApiOperation(value="Consulta de todas as medições de todos os tanques, caso deseje de uma data especifica passar no formato dd/MM/yyyy-dd/MM/yyyy na url")
 	@RequestMapping(method=RequestMethod.GET, consumes=MediaType.APPLICATION_JSON_VALUE)
 	ResponseEntity retornarMedicoes(@RequestParam(value="data", required= false) String stringData) {
 		List<Tanque> tanques;
@@ -67,6 +72,7 @@ public class MedicaoController {
 					return new ResponseEntity<>(tanques, HttpStatus.OK);
 	}
 	//passar data no get caso procure pela data
+	@ApiOperation(value="Consulta de todas as medições de um tanque, caso deseje de uma data especifica passar no formato dd/MM/yyyy-dd/MM/yyyy na url")
 	@RequestMapping(method=RequestMethod.GET , consumes=MediaType.APPLICATION_JSON_VALUE, value="/tanque/{idTanque}")
 	public ResponseEntity retornarMedicoesTanque(@RequestParam(value="data", required = false) String stringData, @PathVariable Long idTanque  ) {
 		Tanque tanque; 
