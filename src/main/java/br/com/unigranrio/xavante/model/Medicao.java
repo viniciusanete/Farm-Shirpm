@@ -2,7 +2,7 @@ package br.com.unigranrio.xavante.model;
 
 import java.util.Date;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.unigranrio.xavante.enums.TipoEnum;
 
@@ -21,6 +21,7 @@ public class Medicao {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	@JsonIgnore
 	public Tanque getTanque() {
 		return tanque;
 	}
