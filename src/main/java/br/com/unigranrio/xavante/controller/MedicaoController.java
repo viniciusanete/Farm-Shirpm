@@ -58,7 +58,7 @@ public class MedicaoController {
 	
 	//passar data no get caso procure pela data
 	@ApiOperation(value="Consulta de todas as medições de todos os tanques, caso deseje de uma data especifica passar no formato dd/MM/yyyy-dd/MM/yyyy na url")
-	@RequestMapping(method=RequestMethod.GET, consumes=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
 	ResponseEntity retornarMedicoes(@RequestParam(value="data", required= false) String stringData) {
 		List<Tanque> tanques;
 				if(stringData == null ) 
@@ -73,7 +73,7 @@ public class MedicaoController {
 	}
 	//passar data no get caso procure pela data
 	@ApiOperation(value="Consulta de todas as medições de um tanque, caso deseje de uma data especifica passar no formato dd/MM/yyyy-dd/MM/yyyy na url")
-	@RequestMapping(method=RequestMethod.GET , consumes=MediaType.APPLICATION_JSON_VALUE, value="/tanque/{idTanque}")
+	@RequestMapping(method=RequestMethod.GET , produces=MediaType.APPLICATION_JSON_VALUE, value="/tanque/{idTanque}")
 	public ResponseEntity retornarMedicoesTanque(@RequestParam(value="data", required = false) String stringData, @PathVariable Long idTanque  ) {
 		Tanque tanque; 
 		if(stringData == null)
