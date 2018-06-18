@@ -66,6 +66,7 @@ create table if not exists registro.arduino(
 arduino_id bigint primary key default nextval('serial_arduino'),
 codigo varchar(100),
 tipo int,
+ip varchar(16),
 TANQ_ID bigint,
 foreign key (TANQ_ID) references registro.tanque (TANQ_ID)
 on delete cascade
