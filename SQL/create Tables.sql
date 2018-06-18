@@ -1,3 +1,4 @@
+insert into c001 values (1, 'viniciusanete','123',false, 1, 'Vinicius', 'viniciusanete@gmail.com')
 ﻿create sequence serial_user start 1
 create table IF NOT EXISTS  C001 (
  USU_ID bigint primary key default nextval('serial_user'),
