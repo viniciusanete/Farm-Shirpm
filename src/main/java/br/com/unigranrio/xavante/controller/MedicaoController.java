@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.unigranrio.xavante.dto.MedicaoDTO;
+import br.com.unigranrio.xavante.enums.TipoEnum;
 import br.com.unigranrio.xavante.model.Medicao;
 import br.com.unigranrio.xavante.model.Tanque;
 import br.com.unigranrio.xavante.model.Usuario;
@@ -87,8 +88,11 @@ public class MedicaoController {
 			return new ResponseEntity<Tanque>(tanque, HttpStatus.OK);
 		
 	}
-	
-	
+	@ApiOperation(value="consulta dos tipos de medicao")
+	@RequestMapping(method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE, value="/tipos")
+	public ResponseEntity<List<TipoEnum>> retornarTiposMedicoes() {
+		return new ResponseEntity(TipoEnum.values(), HttpStatus.OK);
+	}
 	private Medicao atribuirMedicao(MedicaoDTO medicaoDto) {
 		Medicao medicao = new Medicao();
 		if (medicaoDto.getDataMedicao() != null)
