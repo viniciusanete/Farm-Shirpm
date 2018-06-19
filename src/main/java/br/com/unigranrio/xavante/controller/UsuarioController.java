@@ -21,7 +21,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 @Api(value="API para controle de usuario")
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(allowCredentials = "true")
 @RequestMapping(value="/auth/user")
 public class UsuarioController {
 

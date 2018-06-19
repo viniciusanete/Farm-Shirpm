@@ -35,7 +35,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(value="API para controle de medição")
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(allowCredentials = "true")
 @RequestMapping(value="/auth/medicao")
 public class MedicaoController {
 	

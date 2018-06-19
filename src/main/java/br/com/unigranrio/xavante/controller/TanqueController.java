@@ -20,7 +20,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(value="API de controle de tanques")
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(allowCredentials = "true")
 @RequestMapping(value="/auth/tanque")
 public class TanqueController {
 	

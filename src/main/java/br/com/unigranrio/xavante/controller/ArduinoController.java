@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(value="Api para manipulação do arduino")
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(allowCredentials = "true")
 @RequestMapping(value="/auth/arduino")
 public class ArduinoController {
 

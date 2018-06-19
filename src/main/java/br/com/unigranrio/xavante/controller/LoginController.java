@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(value="api para controle do login")
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(allowCredentials = "true")
 @RequestMapping(value="/login")
 public class LoginController {
 	
