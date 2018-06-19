@@ -31,11 +31,11 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 	        ApiInfo apiInfo = new ApiInfo(
 	                "Documentação API REST",
-	                "API REST de um programa para Criaçãoi de camarões",
+	                "API REST de um programa para Criação de camarões",
 	                "1.0",
 	                "Terms of Service",
-	                new Contact("Hugo Rabock e Vinucius meirelles", "https://github.com/Ranock e vinicius",
-	                        "hugooliv@hotmail.com, "),
+	                new Contact("Hugo Rabock e Vinicius Meireles", "https://github.com/Ranock e https://github.com/viniciusanete",
+	                        "hugooliv@hotmail.com, viniciusanete@gmail.com, "),
 	                "Apache License Version 2.0",
 	                "https://www.apache.org/licesen.html", new ArrayList<VendorExtension>()
 	        );
