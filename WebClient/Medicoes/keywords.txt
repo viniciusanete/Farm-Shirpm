@@ -1,0 +1,3 @@
+Medicoes	KEYWORD1
+realizarMedicao	KEYEORD2
+RetornarObjeto	KEYWORD2
