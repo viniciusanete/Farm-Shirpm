@@ -79,7 +79,7 @@ public class MedicaoController {
 	}
 	
 	//passar data no get caso procure pela data
-	@ApiOperation(value="Consulta de tempo real, mockado no momento")
+	@ApiOperation(value="Consulta de tempo real, Finalizado, passe o tanque por parametro na url que retornará as mediçoes dele, (faça um loop)")
 	@RequestMapping(method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE, value="/tanque/{idTanque}/real")
 	ResponseEntity retornarMedicoes(@RequestParam(value="data", required= false) String stringData, @PathVariable Long idTanque) throws InterruptedException {
 		AcaoWebsocket web = new AcaoWebsocket(Acoes.REAL.name(), idTanque);
