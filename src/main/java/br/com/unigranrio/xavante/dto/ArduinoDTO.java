@@ -11,6 +11,8 @@ public class ArduinoDTO {
 	private Long tanque;
 	
 	private Integer tipo;
+	
+	private String ip;
 
 	public Long getId() {
 		return id;
@@ -43,6 +45,14 @@ public class ArduinoDTO {
 
 	public void setTipo(Integer tipo) {
 		this.tipo = tipo;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 	
 	

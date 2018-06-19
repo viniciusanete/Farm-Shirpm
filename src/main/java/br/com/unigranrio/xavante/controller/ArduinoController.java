@@ -1,5 +1,8 @@
 package br.com.unigranrio.xavante.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,6 +37,19 @@ public class ArduinoController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		else
 			return new ResponseEntity<>(arduino, HttpStatus.CREATED);
+		
+	}
+	
+	@ApiOperation(value="Retorno dos arduinos")
+	@RequestMapping(method=RequestMethod.GET,value="/all", produces=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<Arduino>> retornarArduinos(){
+		List<Arduino> arduinos = new ArrayList<>();
+		arduinos = arduinoService.pesquisarArduinos();
+		
+		if(arduinos != null) {
+			return new ResponseEntity<List<Arduino>>(arduinos, HttpStatus.OK);
+		}else
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		
 	}
 	

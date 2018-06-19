@@ -1,5 +1,7 @@
 package br.com.unigranrio.xavante.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import br.com.unigranrio.xavante.dao.ArduinoDAO;
@@ -21,6 +23,12 @@ public class ArduinoService {
 	public Arduino pesquisarArduino(String  codigo) {
 		ArduinoDAO arduinoDao = new ArduinoDAO();
 		return arduinoDao.pesquisarArduino(codigo);
+	
+	}
+	
+	public List<Arduino> pesquisarArduinos() {
+		ArduinoDAO arduinoDao = new ArduinoDAO();
+		return arduinoDao.findAll();
 	
 	}
 }

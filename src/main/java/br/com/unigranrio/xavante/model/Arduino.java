@@ -12,6 +12,8 @@ public class Arduino {
 	
 	private TipoEnum tipo;
 	
+	private String ip; 
+	
 	public Long getId() {
 		return id;
 	}
@@ -48,6 +50,13 @@ public class Arduino {
 	}
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
+	}
+	
+	public String getIp() {
+		return ip;
+	}
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 	@Override
 	public int hashCode() {
