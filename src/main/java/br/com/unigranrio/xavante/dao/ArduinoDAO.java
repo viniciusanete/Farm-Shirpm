@@ -21,12 +21,14 @@ public class ArduinoDAO {
 		
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "insert into registro.arduino (codigo, tipo, tanq_id) values( ?, ?, ? )";
+			sql = "insert into registro.arduino (codigo, tipo, tanq_id, ip) values( ?, ?, ?, ?)";
 			
 			statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, arduino.getCodigo());
 			statement.setInt(2, arduino.getTipo().getValor() );
 			statement.setLong(3,arduino.getTanque().getId());
+			statement.setString(4,arduino.getIp());
+
 			
 			statement.executeUpdate();
 			result = statement.getGeneratedKeys();

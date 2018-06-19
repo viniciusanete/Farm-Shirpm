@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.unigranrio.xavante.dto.MedicaoDTO;
+import br.com.unigranrio.xavante.dto.MedicaoRetornoDTO;
+import br.com.unigranrio.xavante.dto.tipoEnum;
 import br.com.unigranrio.xavante.enums.Acoes;
 import br.com.unigranrio.xavante.enums.TipoEnum;
 import br.com.unigranrio.xavante.model.AcaoWebsocket;
@@ -86,7 +88,7 @@ public class MedicaoController {
 		this.broker.convertAndSend("/topic/greetings", web);
 		Thread.sleep(1000);
 		GerenteTempoReal gerente = GerenteTempoReal.getGerente();
-		List<MedicaoDTO> medDtolist = gerente.medicaoTanque(idTanque);
+		List<MedicaoRetornoDTO> medDtolist = gerente.medicaoTanque(idTanque);
 		
 		return new ResponseEntity<>(medDtolist, HttpStatus.OK);
 	}
@@ -94,7 +96,7 @@ public class MedicaoController {
 	@ApiOperation(value="Consulta de todas as medições de um tanque, caso deseje de uma data especifica passar no formato dd/MM/yyyy-dd/MM/yyyy na url")
 	@RequestMapping(method=RequestMethod.GET , produces=MediaType.APPLICATION_JSON_VALUE, value="/tanque/{idTanque}")
 	public ResponseEntity retornarMedicoesTanque(@RequestParam(value="data", required = false) String stringData, @PathVariable Long idTanque  ) {
-		List<MedicaoDTO> medDto;
+		List<MedicaoRetornoDTO> medDto;
 		if(stringData == null)
 			medDto = medicaoService.pesquisarMedicoes(idTanque);
 		else
@@ -103,15 +105,19 @@ public class MedicaoController {
 		if (medDto == null) 
 			return new ResponseEntity<>("Não foram encontradas medições", HttpStatus.NO_CONTENT);
 		else
-			return new ResponseEntity<List<MedicaoDTO>>(medDto, HttpStatus.OK);
+			return new ResponseEntity<List<MedicaoRetornoDTO>>(medDto, HttpStatus.OK);
 		
 	}
 	@ApiOperation(value="consulta dos tipos de medicao em mapa chave valor")
 	@RequestMapping(method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE, value="/mapatipos")
 	public ResponseEntity<Map<TipoEnum, Integer>> retornarTiposMedicoesMapa() {
-		Map<TipoEnum, Integer> tipos = new HashMap<>();
+		List<tipoEnum> tipos = new ArrayList<>();
+		tipoEnum  en;
 		for (TipoEnum tipo : TipoEnum.values()) {
-			tipos.put(tipo, tipo.getValor());
+			en = new tipoEnum();
+			en.id = tipo.getValor();
+			en.tipo = tipo.name();
+			tipos.add(en);
 		}
 		return new ResponseEntity(tipos, HttpStatus.OK);
 	}

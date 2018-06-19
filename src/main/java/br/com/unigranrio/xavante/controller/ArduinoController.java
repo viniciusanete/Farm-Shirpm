@@ -63,6 +63,7 @@ public class ArduinoController {
 		tanque.setId(ardDto.getTanque());
 		arduino.setTanque(tanque);
 		arduino.setTipo(ardDto.getTipo());
+		arduino.setIp(ardDto.getIp());
 		return arduino;
 		
 	}

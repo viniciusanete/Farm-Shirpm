@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.unigranrio.xavante.dto.MedicaoDTO;
+import br.com.unigranrio.xavante.dto.MedicaoRetornoDTO;
+import br.com.unigranrio.xavante.enums.TipoEnum;
 import br.com.unigranrio.xavante.model.Medicao;
 import br.com.unigranrio.xavante.model.Tanque;
 import br.com.unigranrio.xavante.util.DataUtil;
@@ -164,11 +166,11 @@ public class MedicaoDao implements IDaoPadrao<Medicao> {
 		return tanque;
 	}
 
-	public List<MedicaoDTO> retornarMedicoes(Long idTanque) {
+	public List<MedicaoRetornoDTO> retornarMedicoes(Long idTanque) {
 		Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet result = null; 
-		List<MedicaoDTO> medicoes = new ArrayList<>();
+		List<MedicaoRetornoDTO> medicoes = new ArrayList<>();
 		String sql = null;
 		Integer quantidade;
 		
@@ -205,11 +207,11 @@ public class MedicaoDao implements IDaoPadrao<Medicao> {
 		return medicoes;
 	}
 
-	public List<MedicaoDTO> pesquisarMedicoes(Date datainicial, Date dataFinal, Long idTanque) {
+	public List<MedicaoRetornoDTO> pesquisarMedicoes(Date datainicial, Date dataFinal, Long idTanque) {
 		Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet result = null; 
-		List<MedicaoDTO> medicoes = new ArrayList<>();
+		List<MedicaoRetornoDTO> medicoes = new ArrayList<>();
 		String sql = null;
 		Integer quantidade;
 		
@@ -253,13 +255,13 @@ public class MedicaoDao implements IDaoPadrao<Medicao> {
 		return medicoes;
 	}
 
-	private MedicaoDTO lerMedicao(ResultSet result) throws SQLException {
-		MedicaoDTO medicao = new MedicaoDTO();
+	private MedicaoRetornoDTO lerMedicao(ResultSet result) throws SQLException {
+		MedicaoRetornoDTO medicao = new MedicaoRetornoDTO();
 		
 		medicao.setDataMedicao(DataUtil.parseDataHora(result.getTimestamp("med_datahora")));
 		medicao.setId(result.getLong("med_id"));
 		medicao.setRegistro(result.getString("med_registro"));
-		medicao.setTipo(result.getInt("med_tipo"));
+		medicao.setTipo(TipoEnum.values()[result.getInt("med_tipo")]);
 		medicao.setTanque(result.getLong("med_tanque"));
 		return medicao;
 	}

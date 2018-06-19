@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.unigranrio.xavante.dao.MedicaoDao;
 import br.com.unigranrio.xavante.dto.MedicaoDTO;
+import br.com.unigranrio.xavante.dto.MedicaoRetornoDTO;
 import br.com.unigranrio.xavante.model.Arduino;
 import br.com.unigranrio.xavante.model.Medicao;
 import br.com.unigranrio.xavante.model.Tanque;
@@ -55,12 +56,12 @@ public class MedicaoService {
 		datas = DataUtil.retornarRangeDatas(stringData);		
 		return medicaoDao.retornarMedicoesTanque(idTanque, datas.get(DataUtil.DATA_INICIAL), datas.get(DataUtil.DATA_FINAL));
 	}
-	public List<MedicaoDTO> pesquisarMedicoes(Long idTanque) {
+	public List<MedicaoRetornoDTO> pesquisarMedicoes(Long idTanque) {
 		MedicaoDao medicaoDao = new MedicaoDao();
 		return medicaoDao.retornarMedicoes(idTanque);
 	}
 	
-	public List<MedicaoDTO> pesquisarMedicoes(String stringData, Long idTanque) {
+	public List<MedicaoRetornoDTO> pesquisarMedicoes(String stringData, Long idTanque) {
 		MedicaoDao medicaoDao = new MedicaoDao();
 		Map<String, Date> datas;
 		datas = DataUtil.retornarRangeDatas(stringData);		
@@ -78,6 +79,6 @@ public class MedicaoService {
 		gerente.atribuirMedicaoReal(tanque);
 		return true;
 	}
-	
+
 
 }

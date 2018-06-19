@@ -5,6 +5,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.unigranrio.xavante.dto.MedicaoDTO;
+import br.com.unigranrio.xavante.dto.MedicaoRetornoDTO;
 import br.com.unigranrio.xavante.enums.TipoEnum;
 import br.com.unigranrio.xavante.util.DataUtil;
 
@@ -62,12 +63,12 @@ public class Medicao {
 	public void setRegistro(String registro) {
 		this.registro = registro;
 	}
-	public MedicaoDTO devolveDto() {
-		MedicaoDTO dto = new MedicaoDTO();
+	public MedicaoRetornoDTO devolveDto() {
+		MedicaoRetornoDTO dto = new MedicaoRetornoDTO();
 		dto.setDataMedicao(DataUtil.parseDataHora(this.dataMedicao));
 		dto.setId(this.getId());
 		dto.setRegistro(this.registro);
-		dto.setTipo(tipo.getValor());
+		dto.setTipo(this.tipo);
 		dto.setTanque(this.getTanque().getId());
 		return dto;
 	}

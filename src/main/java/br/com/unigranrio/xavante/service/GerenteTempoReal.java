@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.unigranrio.xavante.dto.MedicaoDTO;
+import br.com.unigranrio.xavante.dto.MedicaoRetornoDTO;
 import br.com.unigranrio.xavante.model.Medicao;
 import br.com.unigranrio.xavante.model.Tanque;
 
@@ -23,8 +24,8 @@ public class GerenteTempoReal {
 	public  List<Tanque> listaTanques(){
 		return tanques;
 	}
-	public  List<MedicaoDTO> medicaoTanque(Long tanque){
-		List<MedicaoDTO> medicoes = new ArrayList<MedicaoDTO>();
+	public  List<MedicaoRetornoDTO> medicaoTanque(Long tanque){
+		List<MedicaoRetornoDTO> medicoes = new ArrayList<MedicaoRetornoDTO>();
 		for(Tanque tanq : tanques) {
 			if (tanq.getId() == tanque) {
 				for(Medicao med : tanq.getMedicao()) {
