@@ -4,7 +4,7 @@
 
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };   //Definição do MAC Address da Ethernet Shield
-IPAddress ip(192, 168, 0, 100);                       // Definição do endereço IP que a Ethernet Shield terá na rede onde estiver conectada. Verifique a Máscara-de-subrede e todos os equipamentos conectados na rede para achar um IP compatível e livre.
+IPAddress ip(10, 0, 19, 50);                       // Definição do endereço IP que a Ethernet Shield terá na rede onde estiver conectada. Verifique a Máscara-de-subrede e todos os equipamentos conectados na rede para achar um IP compatível e livre.
 EthernetServer server(80);                             // Porta em que a Ethernet Shield irá receber as requisições das páginas (o padrão WEB é a porta 80)
 Medicoes medicao;
 
@@ -17,9 +17,16 @@ bool mainPageRequest(String *requisicao);
 int numeroMaxEnumerado = 13;
 void setup()
 {
-  Ethernet.begin(mac, ip);
-  server.begin();
   Serial.begin(9600);
+  Serial.println("iniciando");
+  if (Ethernet.begin(mac) == 0){
+    Serial.println("error");
+    Ethernet.begin(mac, ip);  
+  }
+  Serial.println(Ethernet.localIP());
+  
+  server.begin();
+  
 }
 
 void loop()
@@ -82,10 +89,8 @@ void processaMedicao(byte tipo, EthernetClient cl)
   cHTML += tipo;
  
   if ((URLValue.indexOf(cHTML) > -1) && ((tipo2.length() + URLValue.lastIndexOf(tipo2)) ==  URLValue.length()) && (URLValue.lastIndexOf(tipo2) == URLValue.indexOf(tipo2))) {
-     Serial.println(cHTML);
     cHTML = medicao.RetornarObjeto(tipo, "");    
     cl.println(cHTML);
-    Serial.println(cHTML);
   }
 }
 
