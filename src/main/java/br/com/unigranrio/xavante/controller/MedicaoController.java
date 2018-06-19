@@ -1,26 +1,33 @@
 package br.com.unigranrio.xavante.controller;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.unigranrio.xavante.dto.MedicaoDTO;
+import br.com.unigranrio.xavante.enums.Acoes;
 import br.com.unigranrio.xavante.enums.TipoEnum;
+import br.com.unigranrio.xavante.model.AcaoWebsocket;
 import br.com.unigranrio.xavante.model.Medicao;
 import br.com.unigranrio.xavante.model.Tanque;
 import br.com.unigranrio.xavante.model.Usuario;
+import br.com.unigranrio.xavante.service.GerenteTempoReal;
 import br.com.unigranrio.xavante.service.MedicaoService;
 import br.com.unigranrio.xavante.util.DataUtil;
 import io.swagger.annotations.Api;
@@ -34,6 +41,9 @@ public class MedicaoController {
 	
 	@Autowired
 	MedicaoService medicaoService;
+	
+    @Autowired
+     SimpMessagingTemplate broker;
 
 	@ApiOperation(value="cadastro de medição manual")
 	@RequestMapping(value="/manual", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
@@ -57,37 +67,55 @@ public class MedicaoController {
 				return new ResponseEntity<>(HttpStatus.CREATED);		
 	}
 	
-	//passar data no get caso procure pela data
-	@ApiOperation(value="Consulta de todas as medições de todos os tanques, caso deseje de uma data especifica passar no formato dd/MM/yyyy-dd/MM/yyyy na url")
-	@RequestMapping(method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity retornarMedicoes(@RequestParam(value="data", required= false) String stringData) {
-		List<Tanque> tanques;
-				if(stringData == null ) 
-					tanques = medicaoService.pesquisarMedicoes(stringData);
-				else
-					tanques = medicaoService.pesquisarMedicoes();
-				
-				if (tanques == null) 
-					return new ResponseEntity<>("Não foram encontradas medições", HttpStatus.NO_CONTENT);
-				else
-					return new ResponseEntity<>(tanques, HttpStatus.OK);
+	@ApiOperation(value="Cadastro de medição real pelo outro servidor")
+	@RequestMapping(method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE, value="/tanque/{codigo}/real")
+	public ResponseEntity receberMedicaoServer(@RequestBody List<MedicaoDTO> medicoesDto, @PathVariable Long codigo) {
+			List<Medicao> medicoes = new ArrayList<>();
+			for (MedicaoDTO medicaoDto : medicoesDto ) {
+				medicoes.add(atribuirMedicao(medicaoDto));
+			}
+			medicaoService.salvarMedicaoReal(codigo, medicoes);
+				return new ResponseEntity<>(HttpStatus.OK);		
 	}
+	
 	//passar data no get caso procure pela data
+	@ApiOperation(value="Consulta de tempo real, mockado no momento")
+	@RequestMapping(method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE, value="/tanque/{idTanque}/real")
+	ResponseEntity retornarMedicoes(@RequestParam(value="data", required= false) String stringData, @PathVariable Long idTanque) throws InterruptedException {
+		AcaoWebsocket web = new AcaoWebsocket(Acoes.REAL.name(), idTanque);
+		this.broker.convertAndSend("/topic/greetings", web);
+		Thread.sleep(1000);
+		GerenteTempoReal gerente = GerenteTempoReal.getGerente();
+		List<MedicaoDTO> medDtolist = gerente.medicaoTanque(idTanque);
+		
+		return new ResponseEntity<>(medDtolist, HttpStatus.OK);
+	}
+//	passar data no get caso procure pela data
 	@ApiOperation(value="Consulta de todas as medições de um tanque, caso deseje de uma data especifica passar no formato dd/MM/yyyy-dd/MM/yyyy na url")
 	@RequestMapping(method=RequestMethod.GET , produces=MediaType.APPLICATION_JSON_VALUE, value="/tanque/{idTanque}")
 	public ResponseEntity retornarMedicoesTanque(@RequestParam(value="data", required = false) String stringData, @PathVariable Long idTanque  ) {
-		Tanque tanque; 
+		List<MedicaoDTO> medDto;
 		if(stringData == null)
-			tanque = medicaoService.pesquisarMedicoesTanque(idTanque);
+			medDto = medicaoService.pesquisarMedicoes(idTanque);
 		else
-			tanque = medicaoService.pesquisarMedicoesTanque(idTanque, stringData);
+			medDto = medicaoService.pesquisarMedicoes(stringData, idTanque);
 		
-		if (tanque == null) 
+		if (medDto == null) 
 			return new ResponseEntity<>("Não foram encontradas medições", HttpStatus.NO_CONTENT);
 		else
-			return new ResponseEntity<Tanque>(tanque, HttpStatus.OK);
+			return new ResponseEntity<List<MedicaoDTO>>(medDto, HttpStatus.OK);
 		
 	}
+	@ApiOperation(value="consulta dos tipos de medicao em mapa chave valor")
+	@RequestMapping(method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE, value="/mapatipos")
+	public ResponseEntity<Map<TipoEnum, Integer>> retornarTiposMedicoesMapa() {
+		Map<TipoEnum, Integer> tipos = new HashMap<>();
+		for (TipoEnum tipo : TipoEnum.values()) {
+			tipos.put(tipo, tipo.getValor());
+		}
+		return new ResponseEntity(tipos, HttpStatus.OK);
+	}
+	
 	@ApiOperation(value="consulta dos tipos de medicao")
 	@RequestMapping(method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE, value="/tipos")
 	public ResponseEntity<List<TipoEnum>> retornarTiposMedicoes() {
@@ -116,6 +144,5 @@ public class MedicaoController {
 		
 		return medicao;
 	}
-	
-	
+
 }

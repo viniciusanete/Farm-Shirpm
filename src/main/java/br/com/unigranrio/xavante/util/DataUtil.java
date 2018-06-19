@@ -152,4 +152,13 @@ public class DataUtil {
 			return dataRetorno;
 		
 	}
+	public static String parseDataHora(Date data) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		try{
+			return sdf.format(data);
+		}catch (Exception e) {
+			return null;
+		}
+	}
+	
 }

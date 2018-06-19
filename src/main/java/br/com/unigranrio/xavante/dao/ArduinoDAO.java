@@ -106,7 +106,7 @@ public class ArduinoDAO {
 			result = statement.executeQuery();
 			
 			while(result.next()) {
-				ardList.add(lerArduinoSemTanque(result));
+				ardList.add(lerArduinoComTanque(result));
 			}
 			if(ardList.size() <= 0) {
 				ardList = null; 
@@ -171,7 +171,20 @@ public class ArduinoDAO {
 		arduino.setCodigo(result.getString("codigo"));
 		arduino.setId(result.getLong("arduino_id"));
 		arduino.setTipo(result.getInt("tipo"));
-		//arduino.setTanque(new Tanque());		
+//		Tanque tanque = new Tanque();
+//		tanque.setId(result.getLong("tanq_id"));
+//		arduino.setTanque(tanque);		
+		return arduino;
+	}
+	private Arduino lerArduinoComTanque(ResultSet result) throws SQLException {
+		Arduino arduino = new Arduino();
+		arduino.setCodigo(result.getString("codigo"));
+		arduino.setId(result.getLong("arduino_id"));
+		arduino.setTipo(result.getInt("tipo"));
+		Tanque tanque = new Tanque();
+		tanque.setId(result.getLong("id_tanque"));
+		arduino.setTanque(tanque);		
+		arduino.setIp(result.getString("ip"));
 		return arduino;
 	}
 	

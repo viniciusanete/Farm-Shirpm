@@ -3,6 +3,7 @@ package br.com.unigranrio.xavante.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -10,8 +11,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import br.com.unigranrio.xavante.dto.MedicaoDTO;
 import br.com.unigranrio.xavante.model.Medicao;
 import br.com.unigranrio.xavante.model.Tanque;
+import br.com.unigranrio.xavante.util.DataUtil;
 
 public class MedicaoDao implements IDaoPadrao<Medicao> {
 
@@ -161,21 +164,22 @@ public class MedicaoDao implements IDaoPadrao<Medicao> {
 		return tanque;
 	}
 
-	public List<Tanque> retornarMedicoes() {
+	public List<MedicaoDTO> retornarMedicoes(Long idTanque) {
 		Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet result = null; 
-		List<Tanque> tanques = new ArrayList<>();
+		List<MedicaoDTO> medicoes = new ArrayList<>();
 		String sql = null;
 		Integer quantidade;
 		
 		
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "select tanq_id, tanq_capacidade, tanq_nome, med_datahora, med_registro, med_tanque, med_registro"
-					+ " from registro.medicao m join registro.tanque t on m.tanq_id = med_tanque order by tanq_id ";
+			sql = "select med_datahora, med_registro, med_tanque, med_tipo, med_id"
+					+ " from registro.medicao m  where m.med_tanque = ? order by med_tanque ";
 			
-			con.prepareStatement(sql);
+			statement = con.prepareStatement(sql,ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			statement.setLong(1, idTanque);
 			result = statement.executeQuery();
 			
 			result.last();
@@ -183,14 +187,14 @@ public class MedicaoDao implements IDaoPadrao<Medicao> {
 			result.beforeFirst();
 			
 			if(quantidade <= 0)
-				tanques = null;
+				medicoes = null;
 			
 			while (result.next()) {
-				tanques.add(TanqueDAO.LerTanqueComMedicao(result));
+				medicoes.add(lerMedicao(result));
 			}									
 		} catch (Exception e) {
 			e.printStackTrace();
-			tanques = null;
+			medicoes = null;
 		}finally {
 			try {
 				ConnectionDAO.closeConnection(con);
@@ -198,28 +202,29 @@ public class MedicaoDao implements IDaoPadrao<Medicao> {
 				e2.printStackTrace();
 			}
 		}
-		return tanques;
+		return medicoes;
 	}
 
-	public List<Tanque> pesquisarMedicoes(Date datainicial, Date dataFinal) {
+	public List<MedicaoDTO> pesquisarMedicoes(Date datainicial, Date dataFinal, Long idTanque) {
 		Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet result = null; 
-		List<Tanque> tanques = new ArrayList<>();
+		List<MedicaoDTO> medicoes = new ArrayList<>();
 		String sql = null;
 		Integer quantidade;
 		
 		
 		try {
 			con = ConnectionDAO.getInstance().getConnection();
-			sql = "select tanq_id, tanq_capacidade, tanq_nome, med_datahora, med_registro, med_tanque, med_registro"
-					+ " from registro.medicao m join registro.tanque t on m.tanq_id = med_tanque "
-					+ "where (med_datahora between ? and ?) order by tanq_id, med_datahora";
+			sql = "select med_datahora, med_registro, med_tanque, med_tipo, med_id"
+					+ " from registro.medicao m "
+					+ "where (med_datahora between ? and ?) and m.med_tanque = ? order by med_tanque, med_datahora";
 			
-			con.prepareStatement(sql);
+			statement = con.prepareStatement(sql,ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			
-			statement.setDate(2, new java.sql.Date(datainicial.getTime()));
-			statement.setDate(3, new java.sql.Date(dataFinal.getTime()));
+			statement.setDate(1, new java.sql.Date(datainicial.getTime()));
+			statement.setDate(2, new java.sql.Date(dataFinal.getTime()));
+			statement.setLong(3, idTanque);
 					
 			result = statement.executeQuery();
 			
@@ -228,16 +233,16 @@ public class MedicaoDao implements IDaoPadrao<Medicao> {
 			result.beforeFirst();
 			
 			if(quantidade <= 0)
-				tanques = null;
+				medicoes = null;
 			
 			while (result.next()) {
-				tanques.add(TanqueDAO.LerTanqueComMedicao(result));
+				medicoes.add(lerMedicao(result));
 			}
 						
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			tanques = null;
+			medicoes = null;
 		}finally {
 			try {
 				ConnectionDAO.closeConnection(con);
@@ -245,9 +250,19 @@ public class MedicaoDao implements IDaoPadrao<Medicao> {
 				e2.printStackTrace();
 			}
 		}
-		return tanques;
+		return medicoes;
 	}
 
+	private MedicaoDTO lerMedicao(ResultSet result) throws SQLException {
+		MedicaoDTO medicao = new MedicaoDTO();
+		
+		medicao.setDataMedicao(DataUtil.parseDataHora(result.getTimestamp("med_datahora")));
+		medicao.setId(result.getLong("med_id"));
+		medicao.setRegistro(result.getString("med_registro"));
+		medicao.setTipo(result.getInt("med_tipo"));
+		medicao.setTanque(result.getLong("med_tanque"));
+		return medicao;
+	}
 }
 
 

@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import br.com.unigranrio.xavante.dao.MedicaoDao;
+import br.com.unigranrio.xavante.dto.MedicaoDTO;
 import br.com.unigranrio.xavante.model.Arduino;
 import br.com.unigranrio.xavante.model.Medicao;
 import br.com.unigranrio.xavante.model.Tanque;
@@ -54,20 +55,28 @@ public class MedicaoService {
 		datas = DataUtil.retornarRangeDatas(stringData);		
 		return medicaoDao.retornarMedicoesTanque(idTanque, datas.get(DataUtil.DATA_INICIAL), datas.get(DataUtil.DATA_FINAL));
 	}
-	public List<Tanque> pesquisarMedicoes() {
+	public List<MedicaoDTO> pesquisarMedicoes(Long idTanque) {
 		MedicaoDao medicaoDao = new MedicaoDao();
-		return medicaoDao.retornarMedicoes();
+		return medicaoDao.retornarMedicoes(idTanque);
 	}
 	
-	public List<Tanque> pesquisarMedicoes(String stringData) {
+	public List<MedicaoDTO> pesquisarMedicoes(String stringData, Long idTanque) {
 		MedicaoDao medicaoDao = new MedicaoDao();
 		Map<String, Date> datas;
 		datas = DataUtil.retornarRangeDatas(stringData);		
-		return medicaoDao.pesquisarMedicoes(datas.get(DataUtil.DATA_INICIAL), datas.get(DataUtil.DATA_FINAL));
+		return medicaoDao.pesquisarMedicoes(datas.get(DataUtil.DATA_INICIAL), datas.get(DataUtil.DATA_FINAL), idTanque);
 	}
 	public Medicao salvarMedicao(Medicao medicao) {
 		MedicaoDao medicaoDao = new MedicaoDao();
 		return medicaoDao.save(medicao);
+	}
+	public Boolean salvarMedicaoReal(Long codigo, List<Medicao> medicoes) {
+		Tanque tanque = new Tanque();
+		GerenteTempoReal gerente = GerenteTempoReal.getGerente();
+		tanque.setId(codigo);
+		tanque.setMedicao(medicoes);
+		gerente.atribuirMedicaoReal(tanque);
+		return true;
 	}
 	
 

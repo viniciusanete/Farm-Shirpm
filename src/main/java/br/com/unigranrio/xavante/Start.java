@@ -4,10 +4,6 @@ import java.sql.SQLException;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
-
-import br.com.unigranrio.xavante.configurer.TokenFilter;
 
 @SpringBootApplication
 public class Start {
@@ -23,6 +19,8 @@ public class Start {
 	public static void main(String[] args) throws SQLException {
 		
 		SpringApplication.run(Start.class, args);
+		
+
 		
 
 	}
